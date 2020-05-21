@@ -3,6 +3,7 @@ package com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
@@ -31,9 +32,9 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
 
     internal var isBackgroundPlaybackEnabled = false
 
-    internal fun initialize(initListener: (YouTubePlayer) -> Unit, playerOptions: IFramePlayerOptions?) {
+    internal fun initialize(initListener: (YouTubePlayer) -> Unit, playerOptions: IFramePlayerOptions?, isSmartEmbed: Boolean, channels: Array<String>?) {
         youTubePlayerInitListener = initListener
-        initWebView(playerOptions ?: IFramePlayerOptions.default)
+        initWebView(playerOptions ?: IFramePlayerOptions.default, isSmartEmbed, channels)
     }
 
     override fun onYouTubeIFrameAPIReady() = youTubePlayerInitListener(this)
@@ -93,16 +94,27 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private fun initWebView(playerOptions: IFramePlayerOptions) {
+    private fun initWebView(playerOptions: IFramePlayerOptions, isSmartEmbed: Boolean, channels: Array<String>?) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            // TODO ONLY for dev
+            setWebContentsDebuggingEnabled(true);
+        }
+
         settings.javaScriptEnabled = true
         settings.mediaPlaybackRequiresUserGesture = false
         settings.cacheMode = WebSettings.LOAD_NO_CACHE
 
         addJavascriptInterface(YouTubePlayerBridge(this), "YouTubePlayerBridge")
 
-        val htmlPage = Utils
-                .readHTMLFromUTF8File(resources.openRawResource(R.raw.ayp_youtube_player))
+        val fileRes = if(!isSmartEmbed) R.raw.ayp_youtube_player else R.raw.ayp_smart_embed_youtube_player
+        var htmlPage = Utils
+                .readHTMLFromUTF8File(resources.openRawResource(fileRes))
                 .replace("<<injectedPlayerVars>>", playerOptions.toString())
+
+        if(isSmartEmbed && channels?.isNotEmpty() == true) {
+            htmlPage = htmlPage.replace("<<channels>>", channels.joinToString(","))
+        }
 
         loadDataWithBaseURL(playerOptions.getOrigin(), htmlPage, "text/html", "utf-8", null)
 

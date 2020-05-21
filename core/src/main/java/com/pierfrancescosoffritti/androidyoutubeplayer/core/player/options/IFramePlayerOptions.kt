@@ -115,6 +115,26 @@ class IFramePlayerOptions private constructor(private val playerOptions: JSONObj
             return this
         }
 
+        /**
+         * Controls fs as the fullscreen parameter value.
+         * @param fs Setting this parameter to 0 prevents the fullscreen button from displaying in the player.
+         * The default value is 1, which causes the fullscreen button to display
+         */
+        fun fs(fs: Int): Builder {
+            addInt(FS, fs)
+            return this
+        }
+
+        /**
+         * Controls autoplay as the auto play parameter value.
+         * @param autoplay This parameter specifies whether the initial video will automatically start to play when the player loads.
+         * Supported values are 0 or 1. The default value is 0.
+         */
+        fun autoplay(autoplay: Int): Builder {
+            addInt(AUTO_PLAY, autoplay)
+            return this
+        }
+
         private fun addString(key: String, value: String) {
             try {
                 builderOptions.put(key, value)

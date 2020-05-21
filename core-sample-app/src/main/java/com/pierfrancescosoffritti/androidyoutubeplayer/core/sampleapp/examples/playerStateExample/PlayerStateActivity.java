@@ -10,12 +10,14 @@ import android.widget.TextView;
 
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.YouTubePlayerUtils;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.sampleapp.utils.VideoIdsProvider;
 import com.pierfrancescosoffritti.aytplayersample.R;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,7 +40,13 @@ public class PlayerStateActivity extends AppCompatActivity {
         YouTubePlayerView youTubePlayerView = findViewById(R.id.youtube_player_view);
         getLifecycle().addObserver(youTubePlayerView);
 
-        youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+        IFramePlayerOptions iFramePlayerOptions = new IFramePlayerOptions.Builder()
+                .
+                .build();
+
+        String[] channels = {"UC4SUWizzKc1tptprBkWjX2Q"};
+
+        youTubePlayerView.initialize(new AbstractYouTubePlayerListener() {
             @Override
             public void onReady(@NonNull YouTubePlayer youTubePlayer) {
                 addToList("READY", playerStatesHistory);
@@ -60,7 +68,7 @@ public class PlayerStateActivity extends AppCompatActivity {
             public void onError(@NonNull YouTubePlayer youTubePlayer, @NonNull PlayerConstants.PlayerError error) {
                 addToList("ERROR: " +error.name(), playerStatesHistory);
             }
-        });
+        }, true, channels);
     }
 
     private void onNewState(PlayerConstants.PlayerState newState) {

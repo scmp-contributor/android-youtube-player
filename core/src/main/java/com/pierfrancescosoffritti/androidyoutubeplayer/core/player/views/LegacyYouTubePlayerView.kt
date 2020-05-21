@@ -91,8 +91,10 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
      * @param handleNetworkEvents if set to true a broadcast receiver will be registered and network events will be handled automatically.
      * If set to false, you should handle network events with your own broadcast receiver.
      * @param playerOptions customizable options for the embedded video player, can be null.
+     * @param isSmartEmbed enable Smart Embed player, default false.
+     * @param channels array of channels ID, MUST NOT BE null if isSmartEmbed = true
      */
-    fun initialize(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean, playerOptions: IFramePlayerOptions?) {
+    fun initialize(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean, playerOptions: IFramePlayerOptions?, isSmartEmbed: Boolean, channels: Array<String>?) {
         if(isYouTubePlayerReady)
             throw IllegalStateException("This YouTubePlayerView has already been initialized.")
 
@@ -103,7 +105,7 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
             inflateCustomPlayerUi(R.layout.ayp_empty_layout)
 
         initialize = {
-            youTubePlayer.initialize({it.addListener(youTubePlayerListener)}, playerOptions)
+            youTubePlayer.initialize({it.addListener(youTubePlayerListener)}, playerOptions, isSmartEmbed, channels)
         }
 
         if(!handleNetworkEvents)
@@ -114,33 +116,39 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
      * Initialize the player using the native Ui instead of the web-based Ui.
      * @param handleNetworkEvents if set to true a broadcast receiver will be registered and network events will be handled automatically.
      * If set to false, you should handle network events with your own broadcast receiver.
+     * @param isSmartEmbed enable Smart Embed player, default false.
+     * @param channels array of channels ID, MUST NOT BE null if isSmartEmbed = true
      *
      * @see LegacyYouTubePlayerView.initialize
      */
-    fun initializeWithNativeUi(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean) {
+    fun initializeWithNativeUi(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean, isSmartEmbed: Boolean = false, channels: Array<String>? = null) {
         isUsingWebUi = false
-        initialize(youTubePlayerListener, handleNetworkEvents, null)
+        initialize(youTubePlayerListener, handleNetworkEvents, null, isSmartEmbed, channels)
     }
 
     /**
      * Initialize the player. Network events are automatically handled by the player.
      * @param youTubePlayerListener listener for player events
+     * @param isSmartEmbed enable Smart Embed player, default false.
+     * @param channels array of channels ID, MUST NOT BE null if isSmartEmbed = true
      *
      * @see LegacyYouTubePlayerView.initialize
      */
-    fun initialize(youTubePlayerListener: YouTubePlayerListener) =
-            initialize(youTubePlayerListener, true)
+    fun initialize(youTubePlayerListener: YouTubePlayerListener, isSmartEmbed: Boolean, channels: Array<String>?) =
+            initialize(youTubePlayerListener, true, isSmartEmbed, channels)
 
     /**
      * Initialize the player.
      * The default PlayerUiController will be removed and [LegacyYouTubePlayerView.getPlayerUiController] will throw exception.
      * @param youTubePlayerListener listener for player events
      * @param handleNetworkEvents if set to true a broadcast receiver will be registered and network events will be handled automatically.
+     * @param isSmartEmbed enable Smart Embed player, default false.
+     * @param channels array of channels ID, MUST NOT BE null if isSmartEmbed = true
      * @see LegacyYouTubePlayerView.initialize
      */
-    fun initialize(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean) {
+    fun initialize(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean, isSmartEmbed: Boolean = false, channels: Array<String>? = null) {
         val iFramePlayerOptions = IFramePlayerOptions.Builder().controls(1).build()
-        initialize(youTubePlayerListener, handleNetworkEvents, iFramePlayerOptions)
+        initialize(youTubePlayerListener, handleNetworkEvents, iFramePlayerOptions, isSmartEmbed, channels)
     }
 
     /**

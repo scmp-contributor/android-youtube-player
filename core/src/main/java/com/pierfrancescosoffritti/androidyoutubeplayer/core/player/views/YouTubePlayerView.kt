@@ -107,19 +107,37 @@ class YouTubePlayerView(context: Context, attrs: AttributeSet? = null, defStyleA
      */
     fun initialize(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean, playerOptions: IFramePlayerOptions?) {
         if (enableAutomaticInitialization) throw IllegalStateException("YouTubePlayerView: If you want to initialize this view manually, you need to set 'enableAutomaticInitialization' to false")
-        else legacyTubePlayerView.initialize(youTubePlayerListener, handleNetworkEvents, playerOptions)
+        else legacyTubePlayerView.initialize(youTubePlayerListener, handleNetworkEvents, playerOptions, false, null)
+    }
+
+    /**
+     * Initialize the player. You must call this method before using the player.
+     * @param youTubePlayerListener listener for player events
+     * @param handleNetworkEvents if set to true a broadcast receiver will be registered and network events will be handled automatically.
+     * If set to false, you should handle network events with your own broadcast receiver.
+     * @param playerOptions customizable options for the embedded video player, can be null.
+     * @param isSmartEmbed enable Smart Embed player, default false.
+     * @param channels array of channels ID, MUST NOT BE null if isSmartEmbed = true
+     */
+    fun initialize(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean, playerOptions: IFramePlayerOptions?, isSmartEmbed: Boolean = false, channels: Array<String>? = null) {
+        if (enableAutomaticInitialization) throw IllegalStateException("YouTubePlayerView: If you want to initialize this view manually, you need to set 'enableAutomaticInitialization' to false")
+        else if (isSmartEmbed && channels.isNullOrEmpty()) throw IllegalStateException("YouTubePlayerView: If you want to enable Smart Embed player, please provide minimum 1 channel ID")
+        else legacyTubePlayerView.initialize(youTubePlayerListener, handleNetworkEvents, playerOptions, isSmartEmbed, channels)
     }
 
     /**
      * Initialize the player.
      * @param handleNetworkEvents if set to true a broadcast receiver will be registered and network events will be handled automatically.
      * If set to false, you should handle network events with your own broadcast receiver.
+     * @param isSmartEmbed enable Smart Embed player, default false.
+     * @param channels array of channels ID, MUST NOT BE null if isSmartEmbed = true
      *
      * @see YouTubePlayerView.initialize
      */
-    fun initialize(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean) {
+    fun initialize(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean, isSmartEmbed: Boolean = false, channels: Array<String>? = null) {
         if(enableAutomaticInitialization) throw IllegalStateException("YouTubePlayerView: If you want to initialize this view manually, you need to set 'enableAutomaticInitialization' to false")
-        else legacyTubePlayerView.initialize(youTubePlayerListener, handleNetworkEvents, null)
+        else if (isSmartEmbed && channels.isNullOrEmpty()) throw IllegalStateException("YouTubePlayerView: If you want to enable Smart Embed player, please provide minimum 1 channel ID")
+        else legacyTubePlayerView.initialize(youTubePlayerListener, handleNetworkEvents, null, isSmartEmbed, channels)
     }
 
     /**
@@ -130,16 +148,34 @@ class YouTubePlayerView(context: Context, attrs: AttributeSet? = null, defStyleA
      */
     fun initialize(youTubePlayerListener: YouTubePlayerListener) {
         if (enableAutomaticInitialization) throw IllegalStateException("YouTubePlayerView: If you want to initialize this view manually, you need to set 'enableAutomaticInitialization' to false")
-        else legacyTubePlayerView.initialize(youTubePlayerListener, true)
+        else legacyTubePlayerView.initialize(youTubePlayerListener, isSmartEmbed = false, channels = null)
+    }
+
+    /**
+     * Initialize the player. Network events are automatically handled by the player.
+     * @param youTubePlayerListener listener for player events
+     * @param isSmartEmbed enable Smart Embed player, default false.
+     * @param channels array of channels ID, MUST NOT BE null if isSmartEmbed = true
+     *
+     * @see YouTubePlayerView.initialize
+     */
+    fun initialize(youTubePlayerListener: YouTubePlayerListener, isSmartEmbed: Boolean = false, channels: Array<String>? = null) {
+        if (enableAutomaticInitialization) throw IllegalStateException("YouTubePlayerView: If you want to initialize this view manually, you need to set 'enableAutomaticInitialization' to false")
+        else if (isSmartEmbed && channels.isNullOrEmpty()) throw IllegalStateException("YouTubePlayerView: If you want to enable Smart Embed player, please provide minimum 1 channel ID")
+        else legacyTubePlayerView.initialize(youTubePlayerListener, isSmartEmbed = isSmartEmbed, channels = channels)
     }
 
     /**
      * Initialize a player using the native Ui instead of the web-based Ui.
      *
+     * @param isSmartEmbed enable Smart Embed player, default false.
+     * @param channels array of channels ID, MUST NOT BE null if isSmartEmbed = true
+     *
      * @see YouTubePlayerView.initialize
      */
-    fun initializeWithNativeUi(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean) {
+    fun initializeWithNativeUi(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean, isSmartEmbed: Boolean = false, channels: Array<String>? = null) {
         if(enableAutomaticInitialization) throw IllegalStateException("YouTubePlayerView: If you want to initialize this view manually, you need to set 'enableAutomaticInitialization' to false")
+        else if (isSmartEmbed && channels.isNullOrEmpty()) throw IllegalStateException("YouTubePlayerView: If you want to enable Smart Embed player, please provide minimum 1 channel ID")
         else legacyTubePlayerView.initializeWithNativeUi(youTubePlayerListener, handleNetworkEvents)
     }
 
