@@ -41,7 +41,9 @@ public class PlayerStateActivity extends AppCompatActivity {
         getLifecycle().addObserver(youTubePlayerView);
 
         IFramePlayerOptions iFramePlayerOptions = new IFramePlayerOptions.Builder()
-                .
+                .fs(0)
+                .autoplay(1)
+                .origin("https://www.scmp.com/news/china/military/article/3085107/chinas-military-seeks-bigger-budget-amid-growing-threat-us")
                 .build();
 
         String[] channels = {"UC4SUWizzKc1tptprBkWjX2Q"};
@@ -51,12 +53,27 @@ public class PlayerStateActivity extends AppCompatActivity {
             public void onReady(@NonNull YouTubePlayer youTubePlayer) {
                 addToList("READY", playerStatesHistory);
 
-                setPlayNextVideoButtonClickListener(youTubePlayer);
+                youTubePlayer.play();
+//                setPlayNextVideoButtonClickListener(youTubePlayer);
+//
+//                YouTubePlayerUtils.loadOrCueVideo(
+//                        youTubePlayer, getLifecycle(),
+//                        VideoIdsProvider.getNextVideoId(), 0f
+//                );
+            }
 
-                YouTubePlayerUtils.loadOrCueVideo(
-                        youTubePlayer, getLifecycle(),
-                        VideoIdsProvider.getNextVideoId(), 0f
-                );
+            @Override
+            public void onCurrentSecond(YouTubePlayer youTubePlayer, float second) {
+                super.onCurrentSecond(youTubePlayer, second);
+                TextView playerStatusTextView = findViewById(R.id.player_status_text_view);
+                addToList("onCurrentSecond second = " + second, playerStatesHistory);
+                printStates(playerStatesHistory, playerStatusTextView);
+            }
+
+            @Override
+            public void onVideoDuration(YouTubePlayer youTubePlayer, float duration) {
+                super.onVideoDuration(youTubePlayer, duration);
+                addToList("onVideoDuration duration = " + duration, playerStatesHistory);
             }
 
             @Override
@@ -68,7 +85,7 @@ public class PlayerStateActivity extends AppCompatActivity {
             public void onError(@NonNull YouTubePlayer youTubePlayer, @NonNull PlayerConstants.PlayerError error) {
                 addToList("ERROR: " +error.name(), playerStatesHistory);
             }
-        }, true, channels);
+        }, true, iFramePlayerOptions, true, channels);
     }
 
     private void onNewState(PlayerConstants.PlayerState newState) {
