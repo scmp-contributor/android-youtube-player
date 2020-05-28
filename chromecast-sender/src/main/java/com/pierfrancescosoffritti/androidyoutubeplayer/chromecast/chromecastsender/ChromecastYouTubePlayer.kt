@@ -27,6 +27,12 @@ class ChromecastYouTubePlayer internal constructor(private val chromecastCommuni
         youTubePlayerInitListener(this)
     }
 
+    override fun onSmartEmbedNoVideo() {
+        // notify no Smart Embed video when player ready
+        for (listener in youTubePlayerListeners)
+            listener.onSmartEmbedNoVideo(this)
+    }
+
     override fun getInstance(): YouTubePlayer {
         return this
     }

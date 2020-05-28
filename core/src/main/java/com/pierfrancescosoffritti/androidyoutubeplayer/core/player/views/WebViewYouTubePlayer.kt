@@ -39,6 +39,14 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
 
     override fun onYouTubeIFrameAPIReady() = youTubePlayerInitListener(this)
 
+    override fun onSmartEmbedNoVideo() {
+        // notify no Smart Embed video when player ready
+        mainThreadHandler.post {
+            for (listener in youTubePlayerListeners)
+                listener.onSmartEmbedNoVideo(this)
+        }
+    }
+
     override fun getInstance(): YouTubePlayer = this
 
     override fun loadVideo(videoId: String, startSeconds: Float) {

@@ -52,6 +52,7 @@ class YouTubePlayerBridge(private val youTubePlayerOwner: YouTubePlayerBridgeCal
         fun getInstance(): YouTubePlayer
         fun getListeners(): Collection<YouTubePlayerListener>
         fun onYouTubeIFrameAPIReady()
+        fun onSmartEmbedNoVideo()
     }
 
     @JavascriptInterface
@@ -169,6 +170,11 @@ class YouTubePlayerBridge(private val youTubePlayerOwner: YouTubePlayerBridgeCal
             for (listener in youTubePlayerOwner.getListeners())
                 listener.onVideoId(youTubePlayerOwner.getInstance(), videoId)
         }
+    }
+
+    @JavascriptInterface
+    fun sendSmartEmbedNoVideo() {
+        mainThreadHandler.post { youTubePlayerOwner.onSmartEmbedNoVideo() }
     }
 
     private fun parsePlayerState(state: String): PlayerConstants.PlayerState {

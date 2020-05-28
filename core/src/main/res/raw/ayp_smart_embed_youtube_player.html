@@ -44,9 +44,23 @@
     	var player;
 
         var timerId;
+        var isSmartEmbedNoVideo = false;
+
+        window.addEventListener("message", function(event) {
+            if(event.origin == 'https://www.youtube.com' && event.data == 'youtube-smart-embed-close') {
+                isSmartEmbedNoVideo = true
+                if(player != null) {
+                    YouTubePlayerBridge.sendSmartEmbedNoVideo()
+                }
+            }
+
+        }, false);
 
        	function onYouTubeIframeAPIReady() {
             YouTubePlayerBridge.sendYouTubeIFrameAPIReady();
+            if(isSmartEmbedNoVideo) {
+                YouTubePlayerBridge.sendSmartEmbedNoVideo()
+            }
 
        		player = new YT.Player('smartEmbed', {
                    height: '100%',

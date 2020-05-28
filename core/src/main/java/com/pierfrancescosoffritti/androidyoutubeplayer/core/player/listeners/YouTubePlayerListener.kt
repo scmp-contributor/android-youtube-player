@@ -60,4 +60,9 @@ interface YouTubePlayerListener {
     fun onVideoId(youTubePlayer: YouTubePlayer, videoId: String)
 
     fun onApiChange(youTubePlayer: YouTubePlayer)
+
+    /**
+     * Called when Smart Embed can't find a related video
+     */
+    fun onSmartEmbedNoVideo(youTubePlayer: YouTubePlayer)
 }
