@@ -95,8 +95,15 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
      * @param channels array of channels ID, MUST NOT BE null if isSmartEmbed = true
      */
     fun initialize(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean, playerOptions: IFramePlayerOptions?, isSmartEmbed: Boolean, channels: Array<String>?) {
-        if(isYouTubePlayerReady)
-            throw IllegalStateException("This YouTubePlayerView has already been initialized.")
+        if(isYouTubePlayerReady) {
+
+            // reload the player if it is Smart Embed video
+            if(isSmartEmbed) {
+                youTubePlayer.reloadWebView({it.addListener(youTubePlayerListener)}, playerOptions, isSmartEmbed, channels)
+            } else {
+                throw IllegalStateException("This YouTubePlayerView has already been initialized.")
+            }
+        }
 
         if (handleNetworkEvents)
             context.registerReceiver(networkListener, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))

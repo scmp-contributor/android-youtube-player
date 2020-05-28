@@ -84,8 +84,7 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
     }
 
     override fun destroy() {
-        youTubePlayerListeners.clear()
-        mainThreadHandler.removeCallbacksAndMessages(null)
+        clear()
         super.destroy()
     }
 
@@ -101,6 +100,11 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
         return youTubePlayerListeners.remove(listener)
     }
 
+    private fun clear() {
+        youTubePlayerListeners.clear()
+        mainThreadHandler.removeCallbacksAndMessages(null)
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebView(playerOptions: IFramePlayerOptions, isSmartEmbed: Boolean, channels: Array<String>?) {
 
@@ -114,6 +118,17 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
         settings.cacheMode = WebSettings.LOAD_NO_CACHE
 
         addJavascriptInterface(YouTubePlayerBridge(this), "YouTubePlayerBridge")
+        loadHtmlPlayer(playerOptions, isSmartEmbed, channels)
+    }
+
+    fun reloadWebView(initListener: (YouTubePlayer) -> Unit, playerOptions: IFramePlayerOptions?, isSmartEmbed: Boolean, channels: Array<String>?) {
+
+        clear()
+        youTubePlayerInitListener  = initListener
+        loadHtmlPlayer(playerOptions ?: IFramePlayerOptions.default, isSmartEmbed, channels)
+    }
+
+    private fun loadHtmlPlayer(playerOptions: IFramePlayerOptions, isSmartEmbed: Boolean, channels: Array<String>?) {
 
         val fileRes = if(!isSmartEmbed) R.raw.ayp_youtube_player else R.raw.ayp_smart_embed_youtube_player
         var htmlPage = Utils
