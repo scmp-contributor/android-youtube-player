@@ -39,4 +39,9 @@ interface YouTubePlayer {
 
     fun addListener(listener: YouTubePlayerListener): Boolean
     fun removeListener(listener: YouTubePlayerListener): Boolean
+
+    fun videoID(): String?
+    fun author(): String?
+    fun title(): String?
+    fun duration() : Float
 }

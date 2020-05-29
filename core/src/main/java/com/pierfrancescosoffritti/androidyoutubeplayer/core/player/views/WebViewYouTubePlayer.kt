@@ -12,11 +12,13 @@ import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import com.pierfrancescosoffritti.androidyoutubeplayer.R
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.VideoConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayerBridge
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.Utils
+import org.json.JSONObject
 import java.util.*
 
 /**
@@ -30,7 +32,10 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
     private val youTubePlayerListeners = HashSet<YouTubePlayerListener>()
     private val mainThreadHandler: Handler = Handler(Looper.getMainLooper())
 
+    private var videoData: JSONObject? = null
+    private var duration = 0f
     internal var isBackgroundPlaybackEnabled = false
+
 
     internal fun initialize(initListener: (YouTubePlayer) -> Unit, playerOptions: IFramePlayerOptions?, isSmartEmbed: Boolean, channels: Array<String>?) {
         youTubePlayerInitListener = initListener
@@ -45,6 +50,11 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
             for (listener in youTubePlayerListeners)
                 listener.onSmartEmbedNoVideo(this)
         }
+    }
+
+    override fun onReceiveVideoData(videoData: String, duration: Float) {
+        this.videoData = JSONObject(videoData)
+        this.duration = duration
     }
 
     override fun getInstance(): YouTubePlayer = this
@@ -82,6 +92,11 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
     override fun seekTo(time: Float) {
         mainThreadHandler.post { loadUrl("javascript:seekTo($time)") }
     }
+
+    override fun videoID() = videoData?.getString(VideoConstants.VIDEO_ID)
+    override fun author() = videoData?.getString(VideoConstants.AUTHOR)
+    override fun title() = videoData?.getString(VideoConstants.TITLE)
+    override fun duration() = duration
 
     override fun destroy() {
         clear()

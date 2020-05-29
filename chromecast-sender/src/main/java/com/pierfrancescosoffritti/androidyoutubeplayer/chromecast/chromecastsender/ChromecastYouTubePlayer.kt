@@ -33,6 +33,10 @@ class ChromecastYouTubePlayer internal constructor(private val chromecastCommuni
             listener.onSmartEmbedNoVideo(this)
     }
 
+    override fun onReceiveVideoData(videoData: String, duration: Float) {
+        TODO("Not yet implemented")
+    }
+
     override fun getInstance(): YouTubePlayer {
         return this
     }
@@ -108,5 +112,22 @@ class ChromecastYouTubePlayer internal constructor(private val chromecastCommuni
 
     override fun addListener(listener: YouTubePlayerListener): Boolean = youTubePlayerListeners.add(listener)
     override fun removeListener(listener: YouTubePlayerListener): Boolean = youTubePlayerListeners.remove(listener)
+
+    override fun videoID(): String? {
+        TODO("Not yet implemented")
+    }
+
+    override fun author(): String? {
+        TODO("Not yet implemented")
+    }
+
+    override fun title(): String? {
+        TODO("Not yet implemented")
+    }
+
+    override fun duration(): Float {
+        TODO("Not yet implemented")
+    }
+
     override fun getListeners(): MutableCollection<YouTubePlayerListener> = youTubePlayerListeners
 }

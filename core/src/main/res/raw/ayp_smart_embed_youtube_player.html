@@ -32,14 +32,14 @@
     </body>
 
     <script type="text/javascript">
-        
+
         var UNSTARTED = "UNSTARTED";
         var ENDED = "ENDED";
         var PLAYING = "PLAYING";
         var PAUSED = "PAUSED";
         var BUFFERING = "BUFFERING";
         var CUED = "CUED";
-        
+
         var YouTubePlayerBridge = window.YouTubePlayerBridge;
     	var player;
 
@@ -67,7 +67,10 @@
        			   width: '100%',
 
                    events: {
-                        onReady: function(event) { YouTubePlayerBridge.sendReady() },
+                        onReady: function(event) {
+                            YouTubePlayerBridge.sendReady()
+                            sendVideoData(player)
+                        },
                         onStateChange: function(event) { sendPlayerStateChange(event.data) },
                         onPlaybackQualityChange: function(event) { YouTubePlayerBridge.sendPlaybackQualityChange(event.data) },
                         onPlaybackRateChange: function(event) { YouTubePlayerBridge.sendPlaybackRateChange(event.data) },
@@ -81,10 +84,10 @@
     	function sendPlayerStateChange(playerState) {
             clearTimeout(timerId);
 
-            console.log(playerState);
             switch (playerState) {
             	case YT.PlayerState.UNSTARTED:
                     sendStateChange(UNSTARTED);
+                    sendVideoData(player)
                     return;
 
             	case YT.PlayerState.ENDED:
@@ -93,9 +96,9 @@
 
                 case YT.PlayerState.PLAYING:
                     sendStateChange(PLAYING);
-                    
+
                     startSendCurrentTimeInterval();
-                    sendVideoData(player);
+                    sendVideoDuration(player);
                     return;
 
                 case YT.PlayerState.PAUSED:
@@ -111,9 +114,8 @@
                     return;
             }
 
-            function sendVideoData(player) {
+            function sendVideoDuration(player) {
                 var videoDuration = player.getDuration();
-
                 YouTubePlayerBridge.sendVideoDuration(videoDuration);
             }
 
@@ -129,9 +131,15 @@
             }
         }
 
+        function sendVideoData() {
+            var videoData = JSON.stringify(player.getVideoData());
+            var videoDuration = player.getDuration();
+            YouTubePlayerBridge.sendVideoData(videoData, videoDuration);
+        }
+
         // JAVA to WEB functions
 
-        function seekTo(startSeconds) {        	
+        function seekTo(startSeconds) {
         	player.seekTo(startSeconds, true);
         }
 
@@ -143,15 +151,17 @@
         	player.playVideo();
         }
 
-//        function loadVideo(videoId, startSeconds) {
+        function loadVideo(videoId, startSeconds) {
+              // do nothing in Smart Embed video
 //            player.loadVideoById(videoId, startSeconds);
 //            YouTubePlayerBridge.sendVideoId(videoId);
-//        }
+        }
 
-//        function cueVideo(videoId, startSeconds) {
+        function cueVideo(videoId, startSeconds) {
+              // do nothing in Smart Embed video
 //            player.cueVideoById(videoId, startSeconds);
 //            YouTubePlayerBridge.sendVideoId(videoId);
-//        }
+        }
 
         function mute() {
             player.mute();
