@@ -68,8 +68,8 @@
 
                    events: {
                         onReady: function(event) {
-                            YouTubePlayerBridge.sendReady()
                             sendVideoData(player)
+                            YouTubePlayerBridge.sendReady()
                         },
                         onStateChange: function(event) { sendPlayerStateChange(event.data) },
                         onPlaybackQualityChange: function(event) { YouTubePlayerBridge.sendPlaybackQualityChange(event.data) },
@@ -86,8 +86,8 @@
 
             switch (playerState) {
             	case YT.PlayerState.UNSTARTED:
-                    sendStateChange(UNSTARTED);
                     sendVideoData(player)
+                    sendStateChange(UNSTARTED);
                     return;
 
             	case YT.PlayerState.ENDED:
@@ -95,10 +95,10 @@
                     return;
 
                 case YT.PlayerState.PLAYING:
-                    sendStateChange(PLAYING);
-
                     startSendCurrentTimeInterval();
                     sendVideoDuration(player);
+
+                    sendStateChange(PLAYING);
                     return;
 
                 case YT.PlayerState.PAUSED:
