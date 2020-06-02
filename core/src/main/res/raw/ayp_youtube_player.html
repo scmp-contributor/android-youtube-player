@@ -45,7 +45,10 @@
     			width: '100%',
     			
                 events: {
-    				onReady: function(event) { YouTubePlayerBridge.sendReady() },
+    				onReady: function(event) {
+    				    sendVideoData(player)
+    				    YouTubePlayerBridge.sendReady()
+                    },
     				onStateChange: function(event) { sendPlayerStateChange(event.data) },
     				onPlaybackQualityChange: function(event) { YouTubePlayerBridge.sendPlaybackQualityChange(event.data) },
     				onPlaybackRateChange: function(event) { YouTubePlayerBridge.sendPlaybackRateChange(event.data) },
@@ -63,6 +66,7 @@
 
             switch (playerState) {
             	case YT.PlayerState.UNSTARTED:
+            	    sendVideoData(player);
                     sendStateChange(UNSTARTED);
                     return;
 
@@ -71,10 +75,10 @@
                     return;
 
                 case YT.PlayerState.PLAYING:
-                    sendStateChange(PLAYING);
-                    
                     startSendCurrentTimeInterval();
-                    sendVideoData(player);
+                    sendVideoDuration(player);
+
+                    sendStateChange(PLAYING);
                     return;
 
                 case YT.PlayerState.PAUSED:
@@ -90,9 +94,8 @@
                     return;
             }
 
-            function sendVideoData(player) {
+            function sendVideoDuration(player) {
                 var videoDuration = player.getDuration();
-
                 YouTubePlayerBridge.sendVideoDuration(videoDuration);
             }
 
@@ -106,6 +109,12 @@
                     YouTubePlayerBridge.sendVideoLoadedFraction( player.getVideoLoadedFraction() )
                 }, 500 );
             }
+        }
+
+        function sendVideoData() {
+            var videoData = JSON.stringify(player.getVideoData());
+            var videoDuration = player.getDuration();
+            YouTubePlayerBridge.sendVideoData(videoData, videoDuration);
         }
 
         // JAVA to WEB functions
