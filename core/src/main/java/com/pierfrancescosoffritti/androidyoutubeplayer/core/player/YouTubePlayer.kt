@@ -40,6 +40,9 @@ interface YouTubePlayer {
     fun addListener(listener: YouTubePlayerListener): Boolean
     fun removeListener(listener: YouTubePlayerListener): Boolean
 
+    fun fullscreen()
+    fun exitFullscreen()
+
     fun videoID(): String?
     fun author(): String?
     fun title(): String?

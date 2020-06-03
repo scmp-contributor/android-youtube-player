@@ -297,4 +297,7 @@ internal class DefaultPlayerUiController(private val youTubePlayerView: LegacyYo
     override fun onVideoDuration(youTubePlayer: YouTubePlayer, duration: Float) {}
     override fun onVideoLoadedFraction(youTubePlayer: YouTubePlayer, loadedFraction: Float) {}
     override fun onSmartEmbedNoVideo(youTubePlayer: YouTubePlayer) {}
+    // these fullscreen listen won't called if you are using native ui
+    override fun onYouTubePlayerEnterFullScreen(youTubePlayer: YouTubePlayer) {}
+    override fun onYouTubePlayerExitFullScreen(youTubePlayer: YouTubePlayer) {}
 }

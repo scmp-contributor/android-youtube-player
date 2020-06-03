@@ -65,4 +65,14 @@ interface YouTubePlayerListener {
      * Called when Smart Embed can't find a related video
      */
     fun onSmartEmbedNoVideo(youTubePlayer: YouTubePlayer)
+
+    /**
+     * Called when enter fullscreen if using web ui. Check [YouTubePlayerFullScreenListener] if you are using native ui
+     */
+    fun onYouTubePlayerEnterFullScreen(youTubePlayer: YouTubePlayer)
+
+    /**
+     * Called when exit fullscreen if using web ui. Check [YouTubePlayerFullScreenListener] if you are using native ui
+     */
+    fun onYouTubePlayerExitFullScreen(youTubePlayer: YouTubePlayer)
 }

@@ -151,6 +151,9 @@ class YouTubePlayerSeekBar(context: Context, attrs: AttributeSet? = null): Linea
     override fun onPlaybackRateChange(youTubePlayer: YouTubePlayer, playbackRate: PlayerConstants.PlaybackRate) { }
     override fun onError(youTubePlayer: YouTubePlayer, error: PlayerConstants.PlayerError) { }
     override fun onSmartEmbedNoVideo(youTubePlayer: YouTubePlayer) {}
+    // these fullscreen listen won't called if you are using native ui
+    override fun onYouTubePlayerEnterFullScreen(youTubePlayer: YouTubePlayer) {}
+    override fun onYouTubePlayerExitFullScreen(youTubePlayer: YouTubePlayer) {}
 }
 
 interface YouTubePlayerSeekBarListener {

@@ -112,6 +112,13 @@ class ChromecastYouTubePlayer internal constructor(private val chromecastCommuni
 
     override fun addListener(listener: YouTubePlayerListener): Boolean = youTubePlayerListeners.add(listener)
     override fun removeListener(listener: YouTubePlayerListener): Boolean = youTubePlayerListeners.remove(listener)
+    override fun fullscreen() {
+        TODO("Not yet implemented")
+    }
+
+    override fun exitFullscreen() {
+        TODO("Not yet implemented")
+    }
 
     override fun videoID(): String? {
         TODO("Not yet implemented")

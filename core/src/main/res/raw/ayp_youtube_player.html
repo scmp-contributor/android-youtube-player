@@ -43,7 +43,6 @@
     			
                 height: '100%',
     			width: '100%',
-    			
                 events: {
     				onReady: function(event) {
     				    sendVideoData(player)
@@ -151,6 +150,22 @@
 
         function setVolume(volumePercent) {
             player.setVolume(volumePercent);
+        }
+
+        function fullscreen() {
+            if(!document.fullscreenElement) {
+                player.getIframe().requestFullscreen()
+            } else if(!document.webkitFullscreenElement) {
+                player.getIframe().webkitRequestFullscreen()
+            }
+        }
+
+        function exitFullscreen() {
+            if(document.fullscreenElement) {
+                document.exitFullscreen()
+            } else if(document.webkitFullscreenElement) {
+                document.webkitExitFullscreen()
+            }
         }
 
     </script>

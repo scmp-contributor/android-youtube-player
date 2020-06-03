@@ -42,7 +42,7 @@ class IFramePlayerOptions private constructor(private val playerOptions: JSONObj
             addInt(AUTO_PLAY, 0)
             addInt(CONTROLS, 0)
             addInt(ENABLE_JS_API, 1)
-            addInt(FS, 0)
+            addInt(FS, 1)
             addString(ORIGIN, "https://www.youtube.com")
             addInt(REL, 0)
             addInt(SHOW_INFO, 0)

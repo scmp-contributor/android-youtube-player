@@ -175,5 +175,29 @@
             player.setVolume(volumePercent);
         }
 
+        function fullscreen() {
+            player.toggleFullscreen()
+        }
+
+        function exitFullscreen() {
+            document.exitFullscreen()
+        }
+
+        function fullscreen() {
+            if(!document.fullscreenElement) {
+                player.getIframe().requestFullscreen()
+            } else if(!document.webkitFullscreenElement) {
+                player.getIframe().webkitRequestFullscreen()
+            }
+        }
+
+        function exitFullscreen() {
+            if(document.fullscreenElement) {
+                document.exitFullscreen()
+            } else if(document.webkitFullscreenElement) {
+                document.webkitExitFullscreen()
+            }
+        }
+
     </script>
 </html>

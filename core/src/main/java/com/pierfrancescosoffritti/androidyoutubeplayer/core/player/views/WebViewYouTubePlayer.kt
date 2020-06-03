@@ -11,7 +11,9 @@ import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
+import androidx.appcompat.app.AppCompatActivity
 import com.pierfrancescosoffritti.androidyoutubeplayer.R
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.FullscreenDialogFragment
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.VideoConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayerBridge
@@ -93,6 +95,14 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
         mainThreadHandler.post { loadUrl("javascript:seekTo($time)") }
     }
 
+    override fun fullscreen() {
+        mainThreadHandler.post { loadUrl("javascript:fullscreen()") }
+    }
+
+    override fun exitFullscreen() {
+        mainThreadHandler.post { loadUrl("javascript:exitFullscreen()") }
+    }
+
     override fun videoID() = videoData?.getString(VideoConstants.VIDEO_ID)
     override fun author() = videoData?.getString(VideoConstants.AUTHOR)
     override fun title() = videoData?.getString(VideoConstants.TITLE)
@@ -158,10 +168,35 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
 
         // if the video's thumbnail is not in memory, show a black screen
         webChromeClient = object : WebChromeClient() {
+
+            var playerView: View? = null
+            var dialog: FullscreenDialogFragment? = null
+
             override fun getDefaultVideoPoster(): Bitmap? {
                 val result = super.getDefaultVideoPoster()
-
                 return result ?: Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565)
+            }
+
+            override fun onShowCustomView(view: View?, callback: CustomViewCallback?) {
+                playerView = view
+                dialog = FullscreenDialogFragment.newInstance(playerView, this@WebViewYouTubePlayer)
+                dialog?.show((this@WebViewYouTubePlayer.context as AppCompatActivity).supportFragmentManager, "fullscreen")
+
+                mainThreadHandler.post {
+                    for (listener in youTubePlayerListeners)
+                        listener.onYouTubePlayerEnterFullScreen(this@WebViewYouTubePlayer)
+                }
+            }
+
+            override fun onHideCustomView() {
+                dialog?.dismiss()
+                dialog = null
+                playerView = null
+
+                mainThreadHandler.post {
+                    for (listener in youTubePlayerListeners)
+                        listener.onYouTubePlayerExitFullScreen(this@WebViewYouTubePlayer)
+                }
             }
         }
     }

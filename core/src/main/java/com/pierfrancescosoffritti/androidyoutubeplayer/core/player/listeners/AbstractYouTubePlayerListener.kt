@@ -18,4 +18,6 @@ abstract class AbstractYouTubePlayerListener : YouTubePlayerListener {
     override fun onVideoLoadedFraction(youTubePlayer: YouTubePlayer, loadedFraction: Float) {}
     override fun onVideoId(youTubePlayer: YouTubePlayer, videoId: String) {}
     override fun onSmartEmbedNoVideo(youTubePlayer: YouTubePlayer) {}
+    override fun onYouTubePlayerEnterFullScreen(youTubePlayer: YouTubePlayer) {}
+    override fun onYouTubePlayerExitFullScreen(youTubePlayer: YouTubePlayer) {}
 }
