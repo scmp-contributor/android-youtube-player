@@ -7,11 +7,17 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewParent
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
+import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import com.pierfrancescosoffritti.androidyoutubeplayer.R
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.FullscreenDialogFragment
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.VideoConstants
@@ -38,6 +44,7 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
     private var duration = 0f
     internal var isBackgroundPlaybackEnabled = false
 
+    private var scrollEnable = true
 
     internal fun initialize(initListener: (YouTubePlayer) -> Unit, playerOptions: IFramePlayerOptions?, isSmartEmbed: Boolean, channels: Array<String>?) {
         youTubePlayerInitListener = initListener
@@ -206,5 +213,44 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
             return
 
         super.onWindowVisibilityChanged(visibility)
+    }
+
+    override fun onOverScrolled(scrollX: Int, scrollY: Int, clampedX: Boolean, clampedY: Boolean) {
+        super.onOverScrolled(scrollX, scrollY, clampedX, clampedY)
+        val parentView = findScrollableParent() ?: return
+
+        if (clampedY && scrollEnable) {
+            parentView.requestDisallowInterceptTouchEvent(false)
+        } else if (clampedX && scrollEnable) {
+            parentView.requestDisallowInterceptTouchEvent(false)
+        } else {
+            scrollEnable = false
+        }
+    }
+
+    override fun dispatchTouchEvent(motionEvent: MotionEvent?): Boolean {
+        val parentView = findScrollableParent() ?: return super.dispatchTouchEvent(motionEvent)
+        when (motionEvent?.action) {
+            MotionEvent.ACTION_UP -> parentView.requestDisallowInterceptTouchEvent(false)
+            MotionEvent.ACTION_DOWN -> {
+                parentView.requestDisallowInterceptTouchEvent(true)
+                scrollEnable = true
+            }
+        }
+
+        return super.dispatchTouchEvent(motionEvent)
+    }
+
+    private fun findScrollableParent(): ViewParent? {
+        var parentView = this.parent
+        while (parentView != null && parentView != rootView) {
+            when (parentView) {
+                is ViewPager,
+                is RecyclerView,
+                is ScrollView -> return parentView
+            }
+            parentView = parentView.parent
+        }
+        return null
     }
 }
