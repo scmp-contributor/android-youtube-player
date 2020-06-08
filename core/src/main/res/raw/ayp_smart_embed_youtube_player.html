@@ -84,9 +84,11 @@
     	function sendPlayerStateChange(playerState) {
             clearTimeout(timerId);
 
+            sendVideoData(player);
+            sendVideoDuration(player);
+
             switch (playerState) {
             	case YT.PlayerState.UNSTARTED:
-                    sendVideoData(player);
                     sendStateChange(UNSTARTED);
                     return;
 
@@ -96,8 +98,6 @@
 
                 case YT.PlayerState.PLAYING:
                     startSendCurrentTimeInterval();
-                    sendVideoDuration(player);
-
                     sendStateChange(PLAYING);
                     return;
 
