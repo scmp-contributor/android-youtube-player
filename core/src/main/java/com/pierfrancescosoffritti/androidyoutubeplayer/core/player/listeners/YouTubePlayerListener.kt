@@ -75,4 +75,9 @@ interface YouTubePlayerListener {
      * Called when exit fullscreen if using web ui. Check [YouTubePlayerFullScreenListener] if you are using native ui
      */
     fun onYouTubePlayerExitFullScreen(youTubePlayer: YouTubePlayer)
+
+    /**
+     * Called when lifecycle event ON_DESTROY called.
+     */
+    fun onYouTubePlayerDestroy()
 }

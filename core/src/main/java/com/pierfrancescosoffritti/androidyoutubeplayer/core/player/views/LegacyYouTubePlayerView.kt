@@ -196,6 +196,7 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun release() {
+        youTubePlayer.beforeDestroy()
         removeView(youTubePlayer)
         youTubePlayer.removeAllViews()
         youTubePlayer.destroy()

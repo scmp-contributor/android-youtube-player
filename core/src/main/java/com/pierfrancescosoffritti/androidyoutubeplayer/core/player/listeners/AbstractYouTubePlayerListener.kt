@@ -20,4 +20,5 @@ abstract class AbstractYouTubePlayerListener : YouTubePlayerListener {
     override fun onSmartEmbedNoVideo(youTubePlayer: YouTubePlayer) {}
     override fun onYouTubePlayerEnterFullScreen(youTubePlayer: YouTubePlayer) {}
     override fun onYouTubePlayerExitFullScreen(youTubePlayer: YouTubePlayer) {}
+    override fun onYouTubePlayerDestroy() {}
 }

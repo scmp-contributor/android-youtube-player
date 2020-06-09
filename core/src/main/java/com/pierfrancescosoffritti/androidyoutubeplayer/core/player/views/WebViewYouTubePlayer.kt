@@ -136,6 +136,12 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
         mainThreadHandler.removeCallbacksAndMessages(null)
     }
 
+    fun beforeDestroy() {
+        for (listener in youTubePlayerListeners) {
+            listener.onYouTubePlayerDestroy()
+        }
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebView(playerOptions: IFramePlayerOptions, isSmartEmbed: Boolean, channels: Array<String>?) {
 

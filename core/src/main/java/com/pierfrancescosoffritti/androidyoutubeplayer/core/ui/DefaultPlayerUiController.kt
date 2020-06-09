@@ -300,4 +300,5 @@ internal class DefaultPlayerUiController(private val youTubePlayerView: LegacyYo
     // these fullscreen listen won't called if you are using native ui
     override fun onYouTubePlayerEnterFullScreen(youTubePlayer: YouTubePlayer) {}
     override fun onYouTubePlayerExitFullScreen(youTubePlayer: YouTubePlayer) {}
+    override fun onYouTubePlayerDestroy() {}
 }
