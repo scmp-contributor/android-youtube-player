@@ -3,6 +3,7 @@ package com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -83,6 +84,10 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
         mainThreadHandler.post { loadUrl("javascript:pauseVideo()") }
     }
 
+    override fun stop() {
+        mainThreadHandler.post { loadUrl("javascript:stopVideo()") }
+    }
+
     override fun mute() {
         mainThreadHandler.post { loadUrl("javascript:mute()") }
     }
@@ -153,6 +158,8 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
         settings.javaScriptEnabled = true
         settings.mediaPlaybackRequiresUserGesture = false
         settings.cacheMode = WebSettings.LOAD_NO_CACHE
+
+        setBackgroundColor(Color.TRANSPARENT)
 
         addJavascriptInterface(YouTubePlayerBridge(this), "YouTubePlayerBridge")
         loadHtmlPlayer(playerOptions, isSmartEmbed, channels)

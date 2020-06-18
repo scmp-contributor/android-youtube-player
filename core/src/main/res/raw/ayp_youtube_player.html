@@ -130,6 +130,14 @@
         	player.playVideo();
         }
 
+        function pauseVideo() {
+        	player.pauseVideo();
+        }
+
+        function stopVideo() {
+        	player.stopVideo();
+        }
+
         function loadVideo(videoId, startSeconds) {
             player.loadVideoById(videoId, startSeconds);
             YouTubePlayerBridge.sendVideoId(videoId);

@@ -248,6 +248,8 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
         return defaultPlayerUiController
     }
 
+    fun getPlayer(): YouTubePlayer? = if(isYouTubePlayerReady) youTubePlayer else null
+
     fun enterFullScreen() = fullScreenHelper.enterFullScreen()
 
     fun exitFullScreen() = fullScreenHelper.exitFullScreen()
