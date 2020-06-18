@@ -68,6 +68,9 @@
 
                    events: {
                         onReady: function(event) {
+                            // mute the player as default
+    				        player.mute()
+
                             sendVideoData(player)
                             YouTubePlayerBridge.sendReady()
                         },
