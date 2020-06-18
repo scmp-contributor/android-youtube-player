@@ -47,7 +47,11 @@
         var isSmartEmbedNoVideo = false;
 
         window.addEventListener("message", function(event) {
-            if(event.origin == 'https://www.youtube.com' && event.data == 'youtube-smart-embed-close') {
+
+            if(event.origin == 'https://www.youtube.com' &&
+               event.data.hasOwnProperty('message_id') &&
+               event.data.message_id == 'youtube-smart-embed-close') {
+
                 isSmartEmbedNoVideo = true
                 if(player != null) {
                     YouTubePlayerBridge.sendSmartEmbedNoVideo()
