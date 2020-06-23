@@ -210,7 +210,6 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
             override fun onHideCustomView() {
                 dialog?.dismiss()
                 dialog = null
-                playerView = null
 
                 mainThreadHandler.post {
                     for (listener in youTubePlayerListeners)

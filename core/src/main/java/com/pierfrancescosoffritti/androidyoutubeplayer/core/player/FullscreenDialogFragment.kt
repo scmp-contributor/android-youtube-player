@@ -1,15 +1,11 @@
 package com.pierfrancescosoffritti.androidyoutubeplayer.core.player
 
 import android.app.Dialog
-import android.content.DialogInterface
 import android.content.pm.ActivityInfo
-import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
-import android.webkit.WebChromeClient
 import android.widget.FrameLayout
 import androidx.fragment.app.DialogFragment
 import com.pierfrancescosoffritti.androidyoutubeplayer.R
@@ -57,8 +53,7 @@ class FullscreenDialogFragment : DialogFragment() {
         }
 
         // TODO: can not set MATCH_PARENT here.....need to be fix later
-        val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
-        lp.gravity = Gravity.CENTER
+        val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
 
         videoContainer?.addView(videoView, lp)
         player?.play()
