@@ -52,9 +52,7 @@ class FullscreenDialogFragment : DialogFragment() {
             videoContainer?.removeAllViews()
         }
 
-        // TODO: can not set MATCH_PARENT here.....need to be fix later
         val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-
         videoContainer?.addView(videoView, lp)
         player?.play()
     }
