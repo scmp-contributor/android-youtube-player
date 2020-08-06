@@ -1,10 +1,10 @@
 package com.pierfrancescosoffritti.androidyoutubeplayer.core.player
 
 import android.app.Dialog
-import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
 import android.view.*
 import android.widget.FrameLayout
 import androidx.fragment.app.DialogFragment
@@ -54,7 +54,10 @@ class FullscreenDialogFragment : DialogFragment() {
 
         val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
         videoContainer?.addView(videoView, lp)
-        player?.play()
+
+        Handler().postDelayed({
+            player?.play()
+        }, 200)
     }
 
     override fun onStart() {

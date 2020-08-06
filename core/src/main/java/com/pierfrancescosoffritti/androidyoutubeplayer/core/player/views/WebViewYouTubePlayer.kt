@@ -26,6 +26,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.Utils
+import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
 
@@ -114,10 +115,26 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
         mainThreadHandler.post { loadUrl("javascript:exitFullscreen()") }
     }
 
-    override fun videoID() = videoData?.getString(VideoConstants.VIDEO_ID)
-    override fun author() = videoData?.getString(VideoConstants.AUTHOR)
-    override fun title() = videoData?.getString(VideoConstants.TITLE)
     override fun duration() = duration
+    override fun videoID() =
+            try {
+                videoData?.getString(VideoConstants.VIDEO_ID)
+            } catch (e: JSONException) {
+                null
+            }
+
+    override fun author() =
+            try {
+                videoData?.getString(VideoConstants.AUTHOR)
+            } catch (e: JSONException) {
+                null
+            }
+    override fun title() =
+            try {
+                videoData?.getString(VideoConstants.TITLE)
+            } catch (e: JSONException) {
+                null
+            }
 
     override fun destroy() {
         clear()
