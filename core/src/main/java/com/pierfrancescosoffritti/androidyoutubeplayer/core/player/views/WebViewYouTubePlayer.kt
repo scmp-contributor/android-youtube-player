@@ -19,10 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.pierfrancescosoffritti.androidyoutubeplayer.R
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.FullscreenDialogFragment
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.VideoConstants
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayerBridge
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.*
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.Utils
@@ -43,6 +40,7 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
 
     private var videoData: JSONObject? = null
     private var duration = 0f
+    private var playerState = PlayerConstants.PlayerState.UNKNOWN
     internal var isBackgroundPlaybackEnabled = false
 
     private var scrollEnable = true
@@ -65,6 +63,10 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
     override fun onReceiveVideoData(videoData: String, duration: Float) {
         this.videoData = JSONObject(videoData)
         this.duration = duration
+    }
+
+    override fun onPlayerStateChanged(playerState: PlayerConstants.PlayerState) {
+        this.playerState = playerState
     }
 
     override fun getInstance(): YouTubePlayer = this
@@ -116,6 +118,8 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
     }
 
     override fun duration() = duration
+    override fun playerState(): PlayerConstants.PlayerState = playerState
+
     override fun videoID() =
             try {
                 videoData?.getString(VideoConstants.VIDEO_ID)
