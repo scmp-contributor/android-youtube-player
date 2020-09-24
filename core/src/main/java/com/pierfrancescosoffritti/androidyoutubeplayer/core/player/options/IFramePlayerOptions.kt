@@ -43,7 +43,7 @@ class IFramePlayerOptions private constructor(private val playerOptions: JSONObj
             addInt(CONTROLS, 0)
             addInt(ENABLE_JS_API, 1)
             addInt(FS, 1)
-            addString(ORIGIN, "http://www.scmp.com")
+            addString(ORIGIN, "https://www.scmp.com")
             addInt(REL, 0)
             addInt(SHOW_INFO, 0)
             addInt(IV_LOAD_POLICY, 3)
