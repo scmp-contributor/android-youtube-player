@@ -104,10 +104,6 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
         mainThreadHandler.post { loadUrl("javascript:unMute()") }
     }
 
-    override fun requestIsMuted() {
-        mainThreadHandler.post { loadUrl("javascript:isMuted()") }
-    }
-
     override fun isMuted():Boolean {
         return isMuted
     }

@@ -26,7 +26,6 @@ interface YouTubePlayer {
 
     fun mute()
     fun unMute()
-    fun requestIsMuted() // call this to update isMuted first, then call isMuted()
     fun isMuted(): Boolean
 
     /**

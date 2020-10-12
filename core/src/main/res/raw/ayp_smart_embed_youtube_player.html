@@ -45,6 +45,7 @@
     	var player;
 
         var timerId;
+        var muteTimer;
         var isSmartEmbedNoVideo = false;
 
         window.addEventListener("message", function(event) {
@@ -78,6 +79,8 @@
 
                             sendVideoData(player)
                             YouTubePlayerBridge.sendReady()
+
+                            startSendMuteState()
                         },
                         onStateChange: function(event) { sendPlayerStateChange(event.data) },
                         onPlaybackQualityChange: function(event) { YouTubePlayerBridge.sendPlaybackQualityChange(event.data) },
@@ -88,6 +91,12 @@
                     playerVars: <<injectedPlayerVars>>
        		});
        	}
+
+       	function startSendMuteState() {
+            muteTimer = setInterval(function() {
+                YouTubePlayerBridge.sendIsMuted(player.isMuted());
+            }, 1000 );
+        }
 
     	function sendPlayerStateChange(playerState) {
             clearTimeout(timerId);
@@ -102,6 +111,7 @@
 
             	case YT.PlayerState.ENDED:
                     sendStateChange(ENDED);
+                    clearTimeout(muteTimer);
                     return;
 
                 case YT.PlayerState.PLAYING:
