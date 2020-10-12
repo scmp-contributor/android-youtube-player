@@ -224,6 +224,9 @@ class YouTubePlayerView(context: Context, attrs: AttributeSet? = null, defStyleA
     fun removeYouTubePlayerListener(youTubePlayerListener: YouTubePlayerListener) =
             legacyTubePlayerView.youTubePlayer.removeListener(youTubePlayerListener)
 
+    fun removeAllYouTubePlayerListener() =
+            legacyTubePlayerView.youTubePlayer.removeAllListener()
+
     fun enterFullScreen() = legacyTubePlayerView.enterFullScreen()
 
     fun exitFullScreen() = legacyTubePlayerView.exitFullScreen()

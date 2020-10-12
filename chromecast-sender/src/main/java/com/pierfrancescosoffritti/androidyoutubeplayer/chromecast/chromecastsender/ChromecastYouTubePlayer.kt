@@ -4,6 +4,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.chromecast.chromecastsend
 import com.pierfrancescosoffritti.androidyoutubeplayer.chromecast.chromecastsender.io.youtube.ChromecastCommunicationConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.chromecast.chromecastsender.io.youtube.ChromecastYouTubeMessageDispatcher
 import com.pierfrancescosoffritti.androidyoutubeplayer.chromecast.chromecastsender.utils.JSONUtils
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayerBridge
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener
@@ -34,6 +35,14 @@ class ChromecastYouTubePlayer internal constructor(private val chromecastCommuni
     }
 
     override fun onReceiveVideoData(videoData: String, duration: Float) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onPlayerStateChanged(playerState: PlayerConstants.PlayerState) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMutedChange(isMuted: Boolean) {
         TODO("Not yet implemented")
     }
 
@@ -76,6 +85,16 @@ class ChromecastYouTubePlayer internal constructor(private val chromecastCommuni
 
         chromecastCommunicationChannel.sendMessage(message)
     }
+
+    override fun stop() {
+        // pause to handle stop event
+        val message = JSONUtils.buildFlatJson(
+                "command" to ChromecastCommunicationConstants.PAUSE
+        )
+
+        chromecastCommunicationChannel.sendMessage(message)
+    }
+
     override fun mute() {
         val message = JSONUtils.buildFlatJson(
                 "command" to ChromecastCommunicationConstants.MUTE
@@ -90,6 +109,14 @@ class ChromecastYouTubePlayer internal constructor(private val chromecastCommuni
         )
 
         chromecastCommunicationChannel.sendMessage(message)
+    }
+
+    override fun requestIsMuted() {
+        TODO("Not yet implemented")
+    }
+
+    override fun isMuted(): Boolean {
+        return false
     }
 
     override fun setVolume(volumePercent: Int) {
@@ -112,6 +139,8 @@ class ChromecastYouTubePlayer internal constructor(private val chromecastCommuni
 
     override fun addListener(listener: YouTubePlayerListener): Boolean = youTubePlayerListeners.add(listener)
     override fun removeListener(listener: YouTubePlayerListener): Boolean = youTubePlayerListeners.remove(listener)
+    override fun removeAllListener() { youTubePlayerListeners.clear() }
+
     override fun fullscreen() {
         TODO("Not yet implemented")
     }
@@ -133,6 +162,10 @@ class ChromecastYouTubePlayer internal constructor(private val chromecastCommuni
     }
 
     override fun duration(): Float {
+        TODO("Not yet implemented")
+    }
+
+    override fun playerState(): PlayerConstants.PlayerState {
         TODO("Not yet implemented")
     }
 

@@ -41,6 +41,7 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
     private var videoData: JSONObject? = null
     private var duration = 0f
     private var playerState = PlayerConstants.PlayerState.UNKNOWN
+    private var isMuted = false
     internal var isBackgroundPlaybackEnabled = false
 
     private var scrollEnable = true
@@ -67,6 +68,10 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
 
     override fun onPlayerStateChanged(playerState: PlayerConstants.PlayerState) {
         this.playerState = playerState
+    }
+
+    override fun onMutedChange(isMuted: Boolean) {
+        this.isMuted = isMuted
     }
 
     override fun getInstance(): YouTubePlayer = this
@@ -97,6 +102,14 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
 
     override fun unMute() {
         mainThreadHandler.post { loadUrl("javascript:unMute()") }
+    }
+
+    override fun requestIsMuted() {
+        mainThreadHandler.post { loadUrl("javascript:isMuted()") }
+    }
+
+    override fun isMuted():Boolean {
+        return isMuted
     }
 
     override fun setVolume(volumePercent: Int) {
@@ -157,8 +170,12 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
         return youTubePlayerListeners.remove(listener)
     }
 
-    private fun clear() {
+    override fun removeAllListener() {
         youTubePlayerListeners.clear()
+    }
+
+    private fun clear() {
+        removeAllListener()
         mainThreadHandler.removeCallbacksAndMessages(null)
     }
 

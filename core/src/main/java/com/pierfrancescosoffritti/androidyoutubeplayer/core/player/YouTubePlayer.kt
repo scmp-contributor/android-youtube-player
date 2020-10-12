@@ -26,6 +26,8 @@ interface YouTubePlayer {
 
     fun mute()
     fun unMute()
+    fun requestIsMuted() // call this to update isMuted first, then call isMuted()
+    fun isMuted(): Boolean
 
     /**
      * @param volumePercent Integer between 0 and 100
@@ -40,6 +42,7 @@ interface YouTubePlayer {
 
     fun addListener(listener: YouTubePlayerListener): Boolean
     fun removeListener(listener: YouTubePlayerListener): Boolean
+    fun removeAllListener()
 
     fun fullscreen()
     fun exitFullscreen()

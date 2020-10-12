@@ -153,10 +153,16 @@
 
         function mute() {
             player.mute();
+            YouTubePlayerBridge.sendIsMuted(true);
         }
 
         function unMute() {
             player.unMute();
+            YouTubePlayerBridge.sendIsMuted(false);
+        }
+
+        function isMuted() {
+            YouTubePlayerBridge.sendIsMuted(player.isMuted());
         }
 
         function setVolume(volumePercent) {

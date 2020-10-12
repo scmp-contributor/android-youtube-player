@@ -55,6 +55,7 @@ class YouTubePlayerBridge(private val youTubePlayerOwner: YouTubePlayerBridgeCal
         fun onSmartEmbedNoVideo()
         fun onReceiveVideoData(videoData: String, duration: Float)
         fun onPlayerStateChanged(playerState: PlayerConstants.PlayerState)
+        fun onMutedChange(isMuted: Boolean)
     }
 
     @JavascriptInterface
@@ -192,6 +193,11 @@ class YouTubePlayerBridge(private val youTubePlayerOwner: YouTubePlayerBridgeCal
             return
         }
         mainThreadHandler.post { youTubePlayerOwner.onReceiveVideoData(videoData, videoDuration) }
+    }
+
+    @JavascriptInterface
+    fun sendIsMuted(isMuted: Boolean) {
+        mainThreadHandler.post { youTubePlayerOwner.onMutedChange(isMuted) }
     }
 
     private fun parsePlayerState(state: String): PlayerConstants.PlayerState {
