@@ -50,5 +50,6 @@ interface YouTubePlayer {
     fun author(): String?
     fun title(): String?
     fun duration() : Float
+    fun currentTime(): Float
     fun playerState(): PlayerConstants.PlayerState
 }

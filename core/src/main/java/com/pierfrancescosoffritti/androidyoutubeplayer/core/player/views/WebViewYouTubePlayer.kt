@@ -40,6 +40,7 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
 
     private var videoData: JSONObject? = null
     private var duration = 0f
+    private var currentTime = 0f
     private var playerState = PlayerConstants.PlayerState.UNKNOWN
     private var isMuted = false
     internal var isBackgroundPlaybackEnabled = false
@@ -72,6 +73,10 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
 
     override fun onMutedChange(isMuted: Boolean) {
         this.isMuted = isMuted
+    }
+
+    override fun onUpdateCurrentTime(currentTime: Float) {
+        this.currentTime = currentTime
     }
 
     override fun getInstance(): YouTubePlayer = this
@@ -127,6 +132,7 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
     }
 
     override fun duration() = duration
+    override fun currentTime() = currentTime
     override fun playerState(): PlayerConstants.PlayerState = playerState
 
     override fun videoID() =

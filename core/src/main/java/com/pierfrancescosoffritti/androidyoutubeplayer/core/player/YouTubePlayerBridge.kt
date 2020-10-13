@@ -56,6 +56,7 @@ class YouTubePlayerBridge(private val youTubePlayerOwner: YouTubePlayerBridgeCal
         fun onReceiveVideoData(videoData: String, duration: Float)
         fun onPlayerStateChanged(playerState: PlayerConstants.PlayerState)
         fun onMutedChange(isMuted: Boolean)
+        fun onUpdateCurrentTime(currentTime: Float)
     }
 
     @JavascriptInterface
@@ -131,6 +132,7 @@ class YouTubePlayerBridge(private val youTubePlayerOwner: YouTubePlayerBridgeCal
         }
 
         mainThreadHandler.post {
+            youTubePlayerOwner.onUpdateCurrentTime(currentTimeSeconds)
             for (listener in youTubePlayerOwner.getListeners())
                 listener.onCurrentSecond(youTubePlayerOwner.getInstance(), currentTimeSeconds)
         }

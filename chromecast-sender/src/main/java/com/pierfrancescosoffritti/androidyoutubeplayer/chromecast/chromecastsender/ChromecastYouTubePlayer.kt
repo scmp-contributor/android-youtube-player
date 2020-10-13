@@ -46,6 +46,10 @@ class ChromecastYouTubePlayer internal constructor(private val chromecastCommuni
         TODO("Not yet implemented")
     }
 
+    override fun onUpdateCurrentTime(currentTime: Float) {
+        TODO("Not yet implemented")
+    }
+
     override fun getInstance(): YouTubePlayer {
         return this
     }
@@ -111,10 +115,6 @@ class ChromecastYouTubePlayer internal constructor(private val chromecastCommuni
         chromecastCommunicationChannel.sendMessage(message)
     }
 
-    override fun requestIsMuted() {
-        TODO("Not yet implemented")
-    }
-
     override fun isMuted(): Boolean {
         return false
     }
@@ -162,6 +162,10 @@ class ChromecastYouTubePlayer internal constructor(private val chromecastCommuni
     }
 
     override fun duration(): Float {
+        TODO("Not yet implemented")
+    }
+
+    override fun currentTime(): Float {
         TODO("Not yet implemented")
     }
 
