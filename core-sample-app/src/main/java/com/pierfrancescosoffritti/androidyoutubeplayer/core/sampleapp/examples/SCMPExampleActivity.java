@@ -1,8 +1,13 @@
-package com.pierfrancescosoffritti.androidyoutubeplayer.core.sampleapp.examples.iFramePlayerOptionsExample;
+package com.pierfrancescosoffritti.androidyoutubeplayer.core.sampleapp.examples;
 
 import android.os.Bundle;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.EmbedConfig;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.YouTubePlayerUtils;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions;
@@ -14,22 +19,35 @@ import com.pierfrancescosoffritti.aytplayersample.R;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class IFramePlayerOptionsExampleActivity extends AppCompatActivity {
+public class SCMPExampleActivity extends AppCompatActivity {
 
     private YouTubePlayerView youTubePlayerView;
+    private FrameLayout playerContainer;
+    private EditText iuEditText;
+    private EditText videoIdText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_iframe_player_options_example);
+        setContentView(R.layout.activity_scmp_example);
 
         youTubePlayerView = findViewById(R.id.youtube_player_view);
+        playerContainer = findViewById(R.id.player_container);
+        iuEditText = findViewById(R.id.iu_editText);
+        videoIdText = findViewById(R.id.videoIdEditText);
 
-        initYouTubePlayerView();
+        setButtonClickListener();
     }
 
     private void initYouTubePlayerView() {
-        youTubePlayerView.inflateCustomPlayerUi(R.layout.ayp_empty_layout);
+
+        playerContainer.removeAllViews();
+
+        youTubePlayerView = new YouTubePlayerView(this);
+        youTubePlayerView.setEnableAutomaticInitialization(false);
+        youTubePlayerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        getLifecycle().addObserver(youTubePlayerView);
+
 
         IFramePlayerOptions iFramePlayerOptions = new IFramePlayerOptions.Builder()
                 .controls(0)
@@ -38,32 +56,31 @@ public class IFramePlayerOptionsExampleActivity extends AppCompatActivity {
                 .ccLoadPolicy(1)
                 .build();
 
+        EmbedConfig embedConfig = new EmbedConfig.Builder()
+                .iu(iuEditText.getText().toString())
+                .build();
+
         getLifecycle().addObserver(youTubePlayerView);
 
         youTubePlayerView.initialize(new AbstractYouTubePlayerListener() {
             @Override
             public void onReady(@NonNull YouTubePlayer youTubePlayer) {
-                setPlayNextVideoButtonClickListener(youTubePlayer);
-
                 YouTubePlayerUtils.loadOrCueVideo(
                         youTubePlayer, getLifecycle(),
-                        VideoIdsProvider.getNextVideoId(),0f
+                        videoIdText.getText().toString(), 0f
                 );
             }
-        }, true, iFramePlayerOptions, null);
+        }, true, iFramePlayerOptions, embedConfig);
+
+        playerContainer.addView(youTubePlayerView);
     }
 
     /**
      * Set a click listener on the "Play next video" button
      */
-    private void setPlayNextVideoButtonClickListener(final YouTubePlayer youTubePlayer) {
-        Button playNextVideoButton = findViewById(R.id.next_video_button);
-
-        playNextVideoButton.setOnClickListener(view ->
-                YouTubePlayerUtils.loadOrCueVideo(
-                        youTubePlayer, getLifecycle(),
-                        VideoIdsProvider.getNextVideoId(),0f
-                )
+    private void setButtonClickListener() {
+        findViewById(R.id.initButton).setOnClickListener(view ->
+                initYouTubePlayerView()
         );
     }
 }

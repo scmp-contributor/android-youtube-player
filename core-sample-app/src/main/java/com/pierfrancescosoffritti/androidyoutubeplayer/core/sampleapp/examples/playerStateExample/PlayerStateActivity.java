@@ -43,10 +43,10 @@ public class PlayerStateActivity extends AppCompatActivity {
         IFramePlayerOptions iFramePlayerOptions = new IFramePlayerOptions.Builder()
                 .fs(0)
                 .autoplay(1)
-                .origin("https://www.scmp.com/news/china/military/article/3085107/chinas-military-seeks-bigger-budget-amid-growing-threat-us")
+                .origin("https://www.scmp.com/economy/china-economy/article/3120096/could-new-zealand-serve-honest-broker-repair-ties-between")
                 .build();
 
-        String[] channels = {"UC4SUWizzKc1tptprBkWjX2Q"};
+        String[] channels = {"UC4SUWizzKc1tptprBkWjX2Q", "UCtYYXR3QV_1mKdJNksfCRtQ", "UCivB3CVSWoD5GEz6kTv2bGQ"};
 
         youTubePlayerView.initialize(new AbstractYouTubePlayerListener() {
             @Override
@@ -85,7 +85,7 @@ public class PlayerStateActivity extends AppCompatActivity {
             public void onError(@NonNull YouTubePlayer youTubePlayer, @NonNull PlayerConstants.PlayerError error) {
                 addToList("ERROR: " +error.name(), playerStatesHistory);
             }
-        }, true, iFramePlayerOptions, true, channels);
+        }, true, iFramePlayerOptions, null, true, channels);
     }
 
     private void onNewState(PlayerConstants.PlayerState newState) {
@@ -100,6 +100,7 @@ public class PlayerStateActivity extends AppCompatActivity {
         if(stateHistory.size() >= 15)
             stateHistory.remove(0);
         stateHistory.add(new Pair<>(new Date(), playerState));
+        printStates(stateHistory, findViewById(R.id.player_status_text_view));
     }
 
     private void printStates(List<Pair<Date, String>> states, TextView playerStatusTextView) {

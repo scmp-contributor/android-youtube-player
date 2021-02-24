@@ -73,7 +73,10 @@
        			   width: '100%',
 
                    events: {
-                        onReady: function(event) {
+                        'onReady': function(event) {
+
+                            console.log("on ready");
+
                             // mute the player as default
     				        player.mute()
 
@@ -82,13 +85,25 @@
 
                             startSendMuteState()
                         },
-                        onStateChange: function(event) { sendPlayerStateChange(event.data) },
-                        onPlaybackQualityChange: function(event) { YouTubePlayerBridge.sendPlaybackQualityChange(event.data) },
-                        onPlaybackRateChange: function(event) { YouTubePlayerBridge.sendPlaybackRateChange(event.data) },
-                        onError: function(error) { YouTubePlayerBridge.sendError(error.data) },
-                        onApiChange: function(event) { YouTubePlayerBridge.sendApiChange() }
+                        'onStateChange': function(event) {
+                            console.log("onStateChange");
+                            sendPlayerStateChange(event.data)
+                        },
+                        'onPlaybackQualityChange': function(event) { YouTubePlayerBridge.sendPlaybackQualityChange(event.data) },
+                        'onPlaybackRateChange': function(event) { YouTubePlayerBridge.sendPlaybackRateChange(event.data) },
+                        'onError': function(error) { YouTubePlayerBridge.sendError(error.data) },
+                        'onApiChange': function(event) { YouTubePlayerBridge.sendApiChange() }
                     },
-                    playerVars: <<injectedPlayerVars>>
+                    playerVars: <<injectedPlayerVars>>,
+
+                    embedConfig: {
+                        adsConfig: {
+                            adTagParameters: {
+                                iu: "/8134/scmp/app_mobile-an/china_policiespolitics/article/instream2/china_science/article"
+                            },
+                            nonPersonalizedAd: true
+                        }
+                    }
        		});
        	}
 
