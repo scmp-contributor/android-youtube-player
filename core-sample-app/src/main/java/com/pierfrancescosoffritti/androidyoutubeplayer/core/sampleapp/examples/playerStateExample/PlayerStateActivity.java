@@ -1,23 +1,22 @@
 package com.pierfrancescosoffritti.androidyoutubeplayer.core.sampleapp.examples.playerStateExample;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.core.util.Pair;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.util.Pair;
+
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.YouTubePlayerUtils;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.sampleapp.utils.VideoIdsProvider;
 import com.pierfrancescosoffritti.aytplayersample.R;
 
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,23 +42,19 @@ public class PlayerStateActivity extends AppCompatActivity {
         IFramePlayerOptions iFramePlayerOptions = new IFramePlayerOptions.Builder()
                 .fs(0)
                 .autoplay(1)
-                .origin("https://www.scmp.com/economy/china-economy/article/3120096/could-new-zealand-serve-honest-broker-repair-ties-between")
                 .build();
-
-        String[] channels = {"UC4SUWizzKc1tptprBkWjX2Q", "UCtYYXR3QV_1mKdJNksfCRtQ", "UCivB3CVSWoD5GEz6kTv2bGQ"};
 
         youTubePlayerView.initialize(new AbstractYouTubePlayerListener() {
             @Override
             public void onReady(@NonNull YouTubePlayer youTubePlayer) {
                 addToList("READY", playerStatesHistory);
 
-                youTubePlayer.play();
-//                setPlayNextVideoButtonClickListener(youTubePlayer);
-//
-//                YouTubePlayerUtils.loadOrCueVideo(
-//                        youTubePlayer, getLifecycle(),
-//                        VideoIdsProvider.getNextVideoId(), 0f
-//                );
+                setPlayNextVideoButtonClickListener(youTubePlayer);
+
+                YouTubePlayerUtils.loadOrCueVideo(
+                        youTubePlayer, getLifecycle(),
+                        VideoIdsProvider.getNextVideoId(), 0f
+                );
             }
 
             @Override
@@ -85,7 +80,7 @@ public class PlayerStateActivity extends AppCompatActivity {
             public void onError(@NonNull YouTubePlayer youTubePlayer, @NonNull PlayerConstants.PlayerError error) {
                 addToList("ERROR: " +error.name(), playerStatesHistory);
             }
-        }, true, iFramePlayerOptions, null, true, channels);
+        }, true, iFramePlayerOptions, null);
     }
 
     private void onNewState(PlayerConstants.PlayerState newState) {

@@ -26,8 +26,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="15dp"
-            android:text="dS-rV6mr9aA"/>
+            android:text="dS-rV6mr9aA"
+            android:textSize="15dp" />
 
     </LinearLayout>
 
@@ -56,7 +56,43 @@
         android:id="@+id/initButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
         android:backgroundTint="@android:color/white"
         android:padding="26dp"
         android:text="Load Video" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Smart Embed Video Setting: "
+        android:textSize="18dp"
+        android:textColor="@android:color/black"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="origin: " />
+
+        <EditText
+            android:id="@+id/origin_EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="https://www.scmp.com/economy/china-economy/article/3120096/could-new-zealand-serve-honest-broker-repair-ties-between"
+            android:textSize="15dp" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/initSmartEmbedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@android:color/white"
+        android:padding="26dp"
+        android:text="Load Smart Embed Video" />
 </LinearLayout>
