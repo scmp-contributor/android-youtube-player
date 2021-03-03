@@ -50,7 +50,7 @@ public class SCMPExampleActivity extends AppCompatActivity {
 
 
         IFramePlayerOptions iFramePlayerOptions = new IFramePlayerOptions.Builder()
-                .controls(0)
+                .controls(1)
                 .rel(0)
                 .ivLoadPolicy(1)
                 .ccLoadPolicy(1)
