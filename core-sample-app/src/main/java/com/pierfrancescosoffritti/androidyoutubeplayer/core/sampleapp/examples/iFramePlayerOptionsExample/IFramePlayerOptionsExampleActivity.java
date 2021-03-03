@@ -50,7 +50,7 @@ public class IFramePlayerOptionsExampleActivity extends AppCompatActivity {
                         VideoIdsProvider.getNextVideoId(),0f
                 );
             }
-        }, true, iFramePlayerOptions);
+        }, true, iFramePlayerOptions, null);
     }
 
     /**

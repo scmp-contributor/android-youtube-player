@@ -15,6 +15,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.Abs
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerCallback
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerFullScreenListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.EmbedConfig
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.FullScreenHelper
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.PlayerUiController
@@ -105,9 +106,9 @@ class YouTubePlayerView(context: Context, attrs: AttributeSet? = null, defStyleA
      * If set to false, you should handle network events with your own broadcast receiver.
      * @param playerOptions customizable options for the embedded video player, can be null.
      */
-    fun initialize(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean, playerOptions: IFramePlayerOptions?) {
+    fun initialize(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean, playerOptions: IFramePlayerOptions?, embedConfig: EmbedConfig? = null) {
         if (enableAutomaticInitialization) throw IllegalStateException("YouTubePlayerView: If you want to initialize this view manually, you need to set 'enableAutomaticInitialization' to false")
-        else legacyTubePlayerView.initialize(youTubePlayerListener, handleNetworkEvents, playerOptions, false, null)
+        else legacyTubePlayerView.initialize(youTubePlayerListener, handleNetworkEvents, playerOptions, embedConfig, false, null)
     }
 
     /**
@@ -119,10 +120,10 @@ class YouTubePlayerView(context: Context, attrs: AttributeSet? = null, defStyleA
      * @param isSmartEmbed enable Smart Embed player, default false.
      * @param channels array of channels ID, MUST NOT BE null if isSmartEmbed = true
      */
-    fun initialize(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean, playerOptions: IFramePlayerOptions?, isSmartEmbed: Boolean = false, channels: Array<String>? = null) {
+    fun initialize(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean, playerOptions: IFramePlayerOptions?, embedConfig: EmbedConfig? = null, isSmartEmbed: Boolean = false, channels: Array<String>? = null) {
         if (enableAutomaticInitialization) throw IllegalStateException("YouTubePlayerView: If you want to initialize this view manually, you need to set 'enableAutomaticInitialization' to false")
         else if (isSmartEmbed && channels.isNullOrEmpty()) throw IllegalStateException("YouTubePlayerView: If you want to enable Smart Embed player, please provide minimum 1 channel ID")
-        else legacyTubePlayerView.initialize(youTubePlayerListener, handleNetworkEvents, playerOptions, isSmartEmbed, channels)
+        else legacyTubePlayerView.initialize(youTubePlayerListener, handleNetworkEvents, playerOptions, embedConfig, isSmartEmbed, channels)
     }
 
     /**
@@ -137,7 +138,7 @@ class YouTubePlayerView(context: Context, attrs: AttributeSet? = null, defStyleA
     fun initialize(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean, isSmartEmbed: Boolean = false, channels: Array<String>? = null) {
         if(enableAutomaticInitialization) throw IllegalStateException("YouTubePlayerView: If you want to initialize this view manually, you need to set 'enableAutomaticInitialization' to false")
         else if (isSmartEmbed && channels.isNullOrEmpty()) throw IllegalStateException("YouTubePlayerView: If you want to enable Smart Embed player, please provide minimum 1 channel ID")
-        else legacyTubePlayerView.initialize(youTubePlayerListener, handleNetworkEvents, null, isSmartEmbed, channels)
+        else legacyTubePlayerView.initialize(youTubePlayerListener, handleNetworkEvents, null, null, isSmartEmbed, channels)
     }
 
     /**

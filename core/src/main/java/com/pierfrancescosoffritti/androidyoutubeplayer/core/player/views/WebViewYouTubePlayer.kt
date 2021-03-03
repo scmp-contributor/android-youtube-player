@@ -21,6 +21,7 @@ import androidx.viewpager.widget.ViewPager
 import com.pierfrancescosoffritti.androidyoutubeplayer.R
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.*
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.EmbedConfig
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.Utils
 import org.json.JSONException
@@ -47,9 +48,17 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
 
     private var scrollEnable = true
 
-    internal fun initialize(initListener: (YouTubePlayer) -> Unit, playerOptions: IFramePlayerOptions?, isSmartEmbed: Boolean, channels: Array<String>?) {
+    internal fun initialize(initListener: (YouTubePlayer) -> Unit,
+                            playerOptions: IFramePlayerOptions?,
+                            embedConfig: EmbedConfig?,
+                            isSmartEmbed: Boolean,
+                            channels: Array<String>?) {
+
         youTubePlayerInitListener = initListener
-        initWebView(playerOptions ?: IFramePlayerOptions.default, isSmartEmbed, channels)
+        initWebView(playerOptions = playerOptions ?: IFramePlayerOptions.default,
+                embedConfig = embedConfig ?: EmbedConfig.default,
+                isSmartEmbed = isSmartEmbed,
+                channels = channels)
     }
 
     override fun onYouTubeIFrameAPIReady() = youTubePlayerInitListener(this)
@@ -109,7 +118,7 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
         mainThreadHandler.post { loadUrl("javascript:unMute()") }
     }
 
-    override fun isMuted():Boolean {
+    override fun isMuted(): Boolean {
         return isMuted
     }
 
@@ -148,6 +157,7 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
             } catch (e: JSONException) {
                 null
             }
+
     override fun title() =
             try {
                 videoData?.getString(VideoConstants.TITLE)
@@ -188,11 +198,11 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private fun initWebView(playerOptions: IFramePlayerOptions, isSmartEmbed: Boolean, channels: Array<String>?) {
+    private fun initWebView(playerOptions: IFramePlayerOptions, embedConfig: EmbedConfig, isSmartEmbed: Boolean, channels: Array<String>?) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             // TODO ONLY for dev
-            setWebContentsDebuggingEnabled(true);
+            setWebContentsDebuggingEnabled(true)
         }
 
         settings.javaScriptEnabled = true
@@ -202,61 +212,35 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
         setBackgroundColor(Color.TRANSPARENT)
 
         addJavascriptInterface(YouTubePlayerBridge(this), "YouTubePlayerBridge")
-        loadHtmlPlayer(playerOptions, isSmartEmbed, channels)
+        loadHtmlPlayer(playerOptions, embedConfig, isSmartEmbed, channels)
     }
 
-    fun reloadWebView(initListener: (YouTubePlayer) -> Unit, playerOptions: IFramePlayerOptions?, isSmartEmbed: Boolean, channels: Array<String>?) {
+    fun reloadWebView(initListener: (YouTubePlayer) -> Unit, playerOptions: IFramePlayerOptions?, embedConfig: EmbedConfig? = null, isSmartEmbed: Boolean, channels: Array<String>?) {
 
         clear()
-        youTubePlayerInitListener  = initListener
-        loadHtmlPlayer(playerOptions ?: IFramePlayerOptions.default, isSmartEmbed, channels)
+        youTubePlayerInitListener = initListener
+        loadHtmlPlayer(playerOptions = playerOptions ?: IFramePlayerOptions.default,
+                embedConfig = embedConfig ?: EmbedConfig.default,
+                isSmartEmbed = isSmartEmbed,
+                channels = channels)
     }
 
-    private fun loadHtmlPlayer(playerOptions: IFramePlayerOptions, isSmartEmbed: Boolean, channels: Array<String>?) {
+    private fun loadHtmlPlayer(playerOptions: IFramePlayerOptions, embedConfig: EmbedConfig, isSmartEmbed: Boolean, channels: Array<String>?) {
 
-        val fileRes = if(!isSmartEmbed) R.raw.ayp_youtube_player else R.raw.ayp_smart_embed_youtube_player
+        val fileRes = if (!isSmartEmbed) R.raw.ayp_youtube_player else R.raw.ayp_smart_embed_youtube_player
         var htmlPage = Utils
                 .readHTMLFromUTF8File(resources.openRawResource(fileRes))
                 .replace("<<injectedPlayerVars>>", playerOptions.toString())
 
-        if(isSmartEmbed && channels?.isNotEmpty() == true) {
+        if (isSmartEmbed && channels?.isNotEmpty() == true) {
             htmlPage = htmlPage.replace("<<channels>>", channels.joinToString(","))
         }
 
+        htmlPage = htmlPage.replace("<<embedConfig>>", embedConfig.toString())
+
         loadDataWithBaseURL(playerOptions.getOrigin(), htmlPage, "text/html", "utf-8", null)
 
-        // if the video's thumbnail is not in memory, show a black screen
-        webChromeClient = object : WebChromeClient() {
-
-            var playerView: View? = null
-            var dialog: FullscreenDialogFragment? = null
-
-            override fun getDefaultVideoPoster(): Bitmap? {
-                val result = super.getDefaultVideoPoster()
-                return result ?: Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565)
-            }
-
-            override fun onShowCustomView(view: View?, callback: CustomViewCallback?) {
-                playerView = view
-                dialog = FullscreenDialogFragment.newInstance(playerView, this@WebViewYouTubePlayer)
-                dialog?.show((this@WebViewYouTubePlayer.context as AppCompatActivity).supportFragmentManager, "fullscreen")
-
-                mainThreadHandler.post {
-                    for (listener in youTubePlayerListeners)
-                        listener.onYouTubePlayerEnterFullScreen(this@WebViewYouTubePlayer)
-                }
-            }
-
-            override fun onHideCustomView() {
-                dialog?.dismiss()
-                dialog = null
-
-                mainThreadHandler.post {
-                    for (listener in youTubePlayerListeners)
-                        listener.onYouTubePlayerExitFullScreen(this@WebViewYouTubePlayer)
-                }
-            }
-        }
+        setWebChromeClient()
     }
 
     override fun onWindowVisibilityChanged(visibility: Int) {
@@ -304,4 +288,40 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
         }
         return null
     }
+
+    private fun setWebChromeClient() {
+        // if the video's thumbnail is not in memory, show a black screen
+        webChromeClient = object : WebChromeClient() {
+
+            var playerView: View? = null
+            var dialog: FullscreenDialogFragment? = null
+
+            override fun getDefaultVideoPoster(): Bitmap? {
+                val result = super.getDefaultVideoPoster()
+                return result ?: Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565)
+            }
+
+            override fun onShowCustomView(view: View?, callback: CustomViewCallback?) {
+                playerView = view
+                dialog = FullscreenDialogFragment.newInstance(playerView, this@WebViewYouTubePlayer)
+                dialog?.show((this@WebViewYouTubePlayer.context as AppCompatActivity).supportFragmentManager, "fullscreen")
+
+                mainThreadHandler.post {
+                    for (listener in youTubePlayerListeners)
+                        listener.onYouTubePlayerEnterFullScreen(this@WebViewYouTubePlayer)
+                }
+            }
+
+            override fun onHideCustomView() {
+                dialog?.dismiss()
+                dialog = null
+
+                mainThreadHandler.post {
+                    for (listener in youTubePlayerListeners)
+                        listener.onYouTubePlayerExitFullScreen(this@WebViewYouTubePlayer)
+                }
+            }
+        }
+    }
 }
+

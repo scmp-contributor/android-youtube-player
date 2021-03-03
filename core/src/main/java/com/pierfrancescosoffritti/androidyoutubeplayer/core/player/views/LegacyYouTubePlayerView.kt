@@ -18,6 +18,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.Abs
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerCallback
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerFullScreenListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.EmbedConfig
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.FullScreenHelper
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.NetworkListener
@@ -94,12 +95,12 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
      * @param isSmartEmbed enable Smart Embed player, default false.
      * @param channels array of channels ID, MUST NOT BE null if isSmartEmbed = true
      */
-    fun initialize(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean, playerOptions: IFramePlayerOptions?, isSmartEmbed: Boolean, channels: Array<String>?) {
+    fun initialize(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean, playerOptions: IFramePlayerOptions?, embedConfig: EmbedConfig? = null, isSmartEmbed: Boolean, channels: Array<String>?) {
         if(isYouTubePlayerReady) {
 
             // reload the player if it is Smart Embed video
             if(isSmartEmbed) {
-                youTubePlayer.reloadWebView({it.addListener(youTubePlayerListener)}, playerOptions, isSmartEmbed, channels)
+                youTubePlayer.reloadWebView({it.addListener(youTubePlayerListener)}, playerOptions, embedConfig, isSmartEmbed, channels)
             } else {
                 throw IllegalStateException("This YouTubePlayerView has already been initialized.")
             }
@@ -112,7 +113,7 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
             inflateCustomPlayerUi(R.layout.ayp_empty_layout)
 
         initialize = {
-            youTubePlayer.initialize({it.addListener(youTubePlayerListener)}, playerOptions, isSmartEmbed, channels)
+            youTubePlayer.initialize({it.addListener(youTubePlayerListener)}, playerOptions, embedConfig, isSmartEmbed, channels)
         }
 
         if(!handleNetworkEvents)
@@ -130,7 +131,7 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
      */
     fun initializeWithNativeUi(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean, isSmartEmbed: Boolean = false, channels: Array<String>? = null) {
         isUsingWebUi = false
-        initialize(youTubePlayerListener, handleNetworkEvents, null, isSmartEmbed, channels)
+        initialize(youTubePlayerListener, handleNetworkEvents, null, null, isSmartEmbed, channels)
     }
 
     /**
@@ -155,7 +156,7 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
      */
     fun initialize(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean, isSmartEmbed: Boolean = false, channels: Array<String>? = null) {
         val iFramePlayerOptions = IFramePlayerOptions.Builder().controls(1).build()
-        initialize(youTubePlayerListener, handleNetworkEvents, iFramePlayerOptions, isSmartEmbed, channels)
+        initialize(youTubePlayerListener, handleNetworkEvents, iFramePlayerOptions, null, isSmartEmbed, channels)
     }
 
     /**

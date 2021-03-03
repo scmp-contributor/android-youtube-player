@@ -88,7 +88,8 @@
                         onError: function(error) { YouTubePlayerBridge.sendError(error.data) },
                         onApiChange: function(event) { YouTubePlayerBridge.sendApiChange() }
                     },
-                    playerVars: <<injectedPlayerVars>>
+                    playerVars: <<injectedPlayerVars>>,
+                    embedConfig: <<embedConfig>>
        		});
        	}
 
