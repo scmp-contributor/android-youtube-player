@@ -74,9 +74,6 @@
 
                    events: {
                         'onReady': function(event) {
-
-                            console.log("on ready");
-
                             // mute the player as default
     				        player.mute()
 
@@ -86,7 +83,6 @@
                             startSendMuteState()
                         },
                         'onStateChange': function(event) {
-                            console.log("onStateChange");
                             sendPlayerStateChange(event.data)
                         },
                         'onPlaybackQualityChange': function(event) { YouTubePlayerBridge.sendPlaybackQualityChange(event.data) },
@@ -95,15 +91,7 @@
                         'onApiChange': function(event) { YouTubePlayerBridge.sendApiChange() }
                     },
                     playerVars: <<injectedPlayerVars>>,
-
-                    embedConfig: {
-                        adsConfig: {
-                            adTagParameters: {
-                                iu: "/8134/scmp/app_mobile-an/china_policiespolitics/article/instream2/china_science/article"
-                            },
-                            nonPersonalizedAd: true
-                        }
-                    }
+                    embedConfig: <<embedConfig>>
        		});
        	}
 

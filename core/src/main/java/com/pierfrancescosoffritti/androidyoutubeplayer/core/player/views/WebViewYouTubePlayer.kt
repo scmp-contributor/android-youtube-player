@@ -202,7 +202,7 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             // TODO ONLY for dev
-            setWebContentsDebuggingEnabled(true);
+            setWebContentsDebuggingEnabled(true)
         }
 
         settings.javaScriptEnabled = true
@@ -240,38 +240,7 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
 
         loadDataWithBaseURL(playerOptions.getOrigin(), htmlPage, "text/html", "utf-8", null)
 
-        // if the video's thumbnail is not in memory, show a black screen
-        webChromeClient = object : WebChromeClient() {
-
-            var playerView: View? = null
-            var dialog: FullscreenDialogFragment? = null
-
-            override fun getDefaultVideoPoster(): Bitmap? {
-                val result = super.getDefaultVideoPoster()
-                return result ?: Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565)
-            }
-
-            override fun onShowCustomView(view: View?, callback: CustomViewCallback?) {
-                playerView = view
-                dialog = FullscreenDialogFragment.newInstance(playerView, this@WebViewYouTubePlayer)
-                dialog?.show((this@WebViewYouTubePlayer.context as AppCompatActivity).supportFragmentManager, "fullscreen")
-
-                mainThreadHandler.post {
-                    for (listener in youTubePlayerListeners)
-                        listener.onYouTubePlayerEnterFullScreen(this@WebViewYouTubePlayer)
-                }
-            }
-
-            override fun onHideCustomView() {
-                dialog?.dismiss()
-                dialog = null
-
-                mainThreadHandler.post {
-                    for (listener in youTubePlayerListeners)
-                        listener.onYouTubePlayerExitFullScreen(this@WebViewYouTubePlayer)
-                }
-            }
-        }
+        setWebChromeClient()
     }
 
     override fun onWindowVisibilityChanged(visibility: Int) {
@@ -319,4 +288,40 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
         }
         return null
     }
+
+    private fun setWebChromeClient() {
+        // if the video's thumbnail is not in memory, show a black screen
+        webChromeClient = object : WebChromeClient() {
+
+            var playerView: View? = null
+            var dialog: FullscreenDialogFragment? = null
+
+            override fun getDefaultVideoPoster(): Bitmap? {
+                val result = super.getDefaultVideoPoster()
+                return result ?: Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565)
+            }
+
+            override fun onShowCustomView(view: View?, callback: CustomViewCallback?) {
+                playerView = view
+                dialog = FullscreenDialogFragment.newInstance(playerView, this@WebViewYouTubePlayer)
+                dialog?.show((this@WebViewYouTubePlayer.context as AppCompatActivity).supportFragmentManager, "fullscreen")
+
+                mainThreadHandler.post {
+                    for (listener in youTubePlayerListeners)
+                        listener.onYouTubePlayerEnterFullScreen(this@WebViewYouTubePlayer)
+                }
+            }
+
+            override fun onHideCustomView() {
+                dialog?.dismiss()
+                dialog = null
+
+                mainThreadHandler.post {
+                    for (listener in youTubePlayerListeners)
+                        listener.onYouTubePlayerExitFullScreen(this@WebViewYouTubePlayer)
+                }
+            }
+        }
+    }
 }
+
