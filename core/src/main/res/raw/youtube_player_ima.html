@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+    <style type="text/css">
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+            overflow: hidden;
+            position: fixed;
+        }
+
+        #youTubePlayerDOM {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+        } 
+    </style>
+
+    <head>
+        <meta name="viewport" content="initial-scale={viewport-initial-scale}, user-scalable=no">
+    </head>
+
+    <body>
+        <div id="youTubePlayerDOM"></div>
+    </body>
+
+    <script src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+    <script type="text/javascript">
+        
+        var UNSTARTED = "UNSTARTED";
+        var ENDED = "ENDED";
+        var PLAYING = "PLAYING";
+        var PAUSED = "PAUSED";
+        var BUFFERING = "BUFFERING";
+        var CUED = "CUED";
+        
+        var YouTubePlayerBridge = window.YouTubePlayerBridge;
+    	var player;
+        var imaManager;
+
+        var timerId;
+        var muteTimer;
+
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api?ima=1";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        function onPlayerReady(plyr, ima) {
+            console.log("onPlayerReady")
+            player = plyr;
+            imaManager = ima;
+
+            // mute the player as default
+            player.mute()
+            sendVideoData(player)
+            YouTubePlayerBridge.sendReady()
+            startSendMuteState()
+        }
+
+        function makeAdsRequest(adsRequest, adsRenderingSettings) { // Required
+            console.log("[play.html] makeAdsRequest adsRequest - " + adsRequest)
+            console.log("[play.html] makeAdsRequest adsRenderingSettings - " + adsRenderingSettings)
+
+            // (adsRequest: google.ima.AdsRequest) => {
+            //     const getCustomizedParameter = () => {
+            //         const customizedParameter: Record<string, string | number | unknown[] | undefined> = {
+            //             ...adData?.adInfo?.targeting,
+            //             ga_id: gaId,
+            //             uuid: user?.uuid,
+            //         };
+            //         return qs.stringify(
+            //             Object.entries(customizedParameter).reduce((accumulator, [key, value]) => {
+            //                 if (!value) return accumulator;
+            //                 accumulator[key] = Array.isArray(value) ? value.join(",") : `${value}`;
+            //                 return accumulator;
+            //             }, {} as Record<string, string>),
+            //         );
+            //       };
+
+            const config = <<embedConfig>>
+            console.log(`config iu = ${config["iu"]}`)
+            const params = {
+                correlator: "",
+                // cust_params: getCustomizedParameter(),
+                env: "instream",
+                gdfp_req: "1",
+                impl: "s",
+                iu: config["iu"], // adData.iu,
+                npa: "0",
+                output: "vast",
+                sz: "400x300|480x70|480x360|480x361|640x480",
+                tfcd: "0",
+                unviewed_position_start: "1",
+                url: window.location.origin,
+                vpa: "click",
+                vpmute: "1",
+                wta: "1",
+            };
+
+            const urlSearchParams = new URLSearchParams(params).toString();
+
+            const adUrl = "https://pubads.g.doubleclick.net/gampad/ads";
+            const adTagUrl = `${adUrl}?${urlSearchParams}`;
+
+            console.log(`adTagUrl = ${adTagUrl}`)
+            adsRequest.adTagUrl = adTagUrl;
+
+            // Recommended
+            adsRenderingSettings.useStyledNonLinearAds = true;
+            
+            // Optional: you can also update other properties of the AdsRequest.
+            // Optional: you can also update the adsRenderingSettings // object if needed.
+            adsRenderingSettings.uiElements = [
+                window.google.ima.UiElements.AD_ATTRIBUTION,
+                window.google.ima.UiElements.COUNTDOWN];
+            // }
+        }
+
+        function onYouTubeIframeAPIReady() {
+
+            YouTubePlayerBridge.sendYouTubeIFrameAPIReady();
+
+            const playerVars = <<injectedPlayerVars>>
+            const config = <<embedConfig>>
+            // const playerVars = JSON.parse(playerVarsString); // replace vars in app
+            playerVars["width"] = config["width"]
+            playerVars["height"] = config["height"]
+            playerVars["events"] = {
+                "onStateChange": function(event) { sendPlayerStateChange(event.data) },
+                "onPlaybackQualityChange": function(event) { YouTubePlayerBridge.sendPlaybackQualityChange(event.data) },
+                "onPlaybackRateChange": function(event) { YouTubePlayerBridge.sendPlaybackRateChange(event.data) },
+                "onError": function(error) { YouTubePlayerBridge.sendError(error.data) },
+                "onApiChange": function(event) { YouTubePlayerBridge.sendApiChange() }
+            }
+            
+            console.log(`playerVars = ${JSON.stringify(playerVars)}`)
+
+            YT.createPlayerForPublishers('youTubePlayerDOM', makeAdsRequest, {
+                youtubeOptions: playerVars,
+                imaOptions: {}
+            }, onPlayerReady);
+
+            // player = new YT.Player('youTubePlayerDOM', {
+            //     height: '100%',
+            //     width: '100%',
+            //     events: {
+            //         onReady: function(event) {
+            //             // mute the player as default
+            //             player.mute()
+
+            //             sendVideoData(player)
+            //             YouTubePlayerBridge.sendReady()
+
+            //             startSendMuteState()
+            //         },
+            //         onStateChange: function(event) { sendPlayerStateChange(event.data) },
+            //         onPlaybackQualityChange: function(event) { YouTubePlayerBridge.sendPlaybackQualityChange(event.data) },
+            //         onPlaybackRateChange: function(event) { YouTubePlayerBridge.sendPlaybackRateChange(event.data) },
+            //         onError: function(error) { YouTubePlayerBridge.sendError(error.data) },
+            //         onApiChange: function(event) { YouTubePlayerBridge.sendApiChange() }
+            //     },
+
+            //     playerVars: <<injectedPlayerVars>>,
+            //     embedConfig: <<embedConfig>>
+            // });
+        }
+
+    	function startSendMuteState() {
+            muteTimer = setInterval(function() {
+                YouTubePlayerBridge.sendIsMuted(player.isMuted());
+            }, 1000 );
+        }
+
+    	function sendPlayerStateChange(playerState) {
+            clearTimeout(timerId);
+
+            sendVideoData(player);
+            sendVideoDuration(player);
+
+            console.log(`sendPlayerStateChange = ${playerState.toString()}`)
+
+            switch (playerState) {
+            	case YT.PlayerState.UNSTARTED:
+                    sendStateChange(UNSTARTED);
+                    return;
+
+            	case YT.PlayerState.ENDED:
+                    sendStateChange(ENDED);
+                    clearTimeout(muteTimer);
+                    return;
+
+                case YT.PlayerState.PLAYING:
+                    startSendCurrentTimeInterval();
+                    sendStateChange(PLAYING);
+                    return;
+
+                case YT.PlayerState.PAUSED:
+                    sendStateChange(PAUSED);
+                    return;
+
+                case YT.PlayerState.BUFFERING:
+                    sendStateChange(BUFFERING);
+                    return;
+
+                case YT.PlayerState.CUED:
+                    sendStateChange(CUED);
+                    return;
+            }
+
+            function sendVideoDuration(player) {
+                var videoDuration = player.getDuration();
+                YouTubePlayerBridge.sendVideoDuration(videoDuration);
+            }
+
+            function sendStateChange(newState) {
+                YouTubePlayerBridge.sendStateChange(newState)
+            }
+
+            function startSendCurrentTimeInterval() {
+                timerId = setInterval(function() {
+                    console.log(`Interval = ${player.getCurrentTime()}`)
+                    YouTubePlayerBridge.sendVideoCurrentTime( player.getCurrentTime() )
+                    YouTubePlayerBridge.sendVideoLoadedFraction( player.getVideoLoadedFraction() )
+                }, 200 );
+            }
+        }
+
+        function sendVideoData() {
+            var videoData = JSON.stringify(player.getVideoData());
+            var videoDuration = player.getDuration();
+            YouTubePlayerBridge.sendVideoData(videoData, videoDuration);
+        }
+
+        // JAVA to WEB functions
+
+        function seekTo(startSeconds) {        	
+        	player.seekTo(startSeconds, true);
+        }
+
+        function pauseVideo() {
+        	player.pauseVideo();
+        }
+
+        function playVideo() {
+        	player.playVideo();
+        }
+
+        function pauseVideo() {
+        	player.pauseVideo();
+        }
+
+        function stopVideo() {
+        	player.stopVideo();
+        }
+
+        function loadVideo(videoId, startSeconds) {
+            player.loadVideoById(videoId, startSeconds);
+            YouTubePlayerBridge.sendVideoId(videoId);
+        }
+
+        function cueVideo(videoId, startSeconds) {
+            player.cueVideoById(videoId, startSeconds);
+            YouTubePlayerBridge.sendVideoId(videoId);
+        }
+
+        function mute() {
+            player.mute();
+            YouTubePlayerBridge.sendIsMuted(true);
+        }
+
+        function unMute() {
+            player.unMute();
+            YouTubePlayerBridge.sendIsMuted(false);
+        }
+
+        function isMuted() {
+            YouTubePlayerBridge.sendIsMuted(player.isMuted());
+        }
+
+        function setVolume(volumePercent) {
+            player.setVolume(volumePercent);
+        }
+
+        function fullscreen() {
+            if(!document.fullscreenElement) {
+                player.getIframe().requestFullscreen()
+            } else if(!document.webkitFullscreenElement) {
+                player.getIframe().webkitRequestFullscreen()
+            }
+        }
+
+        function exitFullscreen() {
+            if(document.fullscreenElement) {
+                document.exitFullscreen()
+            } else if(document.webkitFullscreenElement) {
+                document.webkitExitFullscreen()
+            }
+        }
+
+    </script>
+</html>

@@ -227,7 +227,7 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
 
     private fun loadHtmlPlayer(playerOptions: IFramePlayerOptions, embedConfig: EmbedConfig, isSmartEmbed: Boolean, channels: Array<String>?) {
 
-        val fileRes = if (!isSmartEmbed) R.raw.ayp_youtube_player else R.raw.ayp_smart_embed_youtube_player
+        val fileRes = if (!isSmartEmbed) R.raw.youtube_player_ima else R.raw.ayp_smart_embed_youtube_player
         var htmlPage = Utils
                 .readHTMLFromUTF8File(resources.openRawResource(fileRes))
                 .replace("<<injectedPlayerVars>>", playerOptions.toString())

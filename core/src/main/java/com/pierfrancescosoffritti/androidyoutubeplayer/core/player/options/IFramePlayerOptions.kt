@@ -23,6 +23,7 @@ class IFramePlayerOptions private constructor(private val playerOptions: JSONObj
 
     class Builder {
         companion object {
+            private const val YOUTUBE_ID = "videoId"
             private const val AUTO_PLAY = "autoplay"
             private const val CONTROLS = "controls"
             private const val ENABLE_JS_API = "enablejsapi"
@@ -39,6 +40,7 @@ class IFramePlayerOptions private constructor(private val playerOptions: JSONObj
         private val builderOptions = JSONObject()
 
         init {
+            addString(YOUTUBE_ID, "")
             addInt(AUTO_PLAY, 0)
             addInt(CONTROLS, 0)
             addInt(ENABLE_JS_API, 1)
@@ -53,6 +55,11 @@ class IFramePlayerOptions private constructor(private val playerOptions: JSONObj
 
         fun build(): IFramePlayerOptions {
             return IFramePlayerOptions(builderOptions)
+        }
+
+        fun youtubeId(youtubeId: String): Builder {
+            addString(YOUTUBE_ID, youtubeId)
+            return this
         }
 
         /**
