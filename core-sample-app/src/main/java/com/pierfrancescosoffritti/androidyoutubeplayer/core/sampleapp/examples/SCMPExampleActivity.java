@@ -1,6 +1,7 @@
 package com.pierfrancescosoffritti.androidyoutubeplayer.core.sampleapp.examples;
 
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -53,13 +54,22 @@ public class SCMPExampleActivity extends AppCompatActivity {
 
 
         IFramePlayerOptions.Builder iFramePlayerOptions = new IFramePlayerOptions.Builder()
+                .youtubeId(videoIdText.getText().toString())
                 .controls(1)
                 .rel(0)
                 .ivLoadPolicy(1)
                 .ccLoadPolicy(1);
 
+        final float density = this.getResources().getDisplayMetrics().density;
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int height = metrics.heightPixels;
+        int width = (int)(metrics.widthPixels / density);
+
         EmbedConfig embedConfig = new EmbedConfig.Builder()
                 .iu(iuEditText.getText().toString())
+                .size(width, (int)(width / (16f/9f)))
                 .build();
 
         getLifecycle().addObserver(youTubePlayerView);
@@ -79,10 +89,10 @@ public class SCMPExampleActivity extends AppCompatActivity {
             youTubePlayerView.initialize(new AbstractYouTubePlayerListener() {
                 @Override
                 public void onReady(@NonNull YouTubePlayer youTubePlayer) {
-                    YouTubePlayerUtils.loadOrCueVideo(
-                            youTubePlayer, getLifecycle(),
-                            videoIdText.getText().toString(), 0f
-                    );
+//                    YouTubePlayerUtils.loadOrCueVideo(
+//                            youTubePlayer, getLifecycle(),
+//                            videoIdText.getText().toString(), 0f
+//                    );
                 }
             }, true, iFramePlayerOptions.build(), embedConfig);
         }
