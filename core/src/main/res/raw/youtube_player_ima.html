@@ -29,6 +29,9 @@
     <script src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
     <script type="text/javascript">
         
+        const playerVars = <<injectedPlayerVars>>
+        const config = <<embedConfig>>
+
         var UNSTARTED = "UNSTARTED";
         var ENDED = "ENDED";
         var PLAYING = "PLAYING";
@@ -61,34 +64,14 @@
         }
 
         function makeAdsRequest(adsRequest, adsRenderingSettings) { // Required
-            console.log("[play.html] makeAdsRequest adsRequest - " + adsRequest)
-            console.log("[play.html] makeAdsRequest adsRenderingSettings - " + adsRenderingSettings)
 
-            // (adsRequest: google.ima.AdsRequest) => {
-            //     const getCustomizedParameter = () => {
-            //         const customizedParameter: Record<string, string | number | unknown[] | undefined> = {
-            //             ...adData?.adInfo?.targeting,
-            //             ga_id: gaId,
-            //             uuid: user?.uuid,
-            //         };
-            //         return qs.stringify(
-            //             Object.entries(customizedParameter).reduce((accumulator, [key, value]) => {
-            //                 if (!value) return accumulator;
-            //                 accumulator[key] = Array.isArray(value) ? value.join(",") : `${value}`;
-            //                 return accumulator;
-            //             }, {} as Record<string, string>),
-            //         );
-            //       };
-
-            const config = <<embedConfig>>
             console.log(`config iu = ${config["iu"]}`)
             const params = {
                 correlator: "",
-                // cust_params: getCustomizedParameter(),
                 env: "instream",
                 gdfp_req: "1",
                 impl: "s",
-                iu: config["iu"], // adData.iu,
+                iu: config["iu"],
                 npa: "0",
                 output: "vast",
                 sz: "400x300|480x70|480x360|480x361|640x480",
@@ -103,7 +86,7 @@
             const urlSearchParams = new URLSearchParams(params).toString();
 
             const adUrl = "https://pubads.g.doubleclick.net/gampad/ads";
-            const adTagUrl = `${adUrl}?${urlSearchParams}`;
+            const adTagUrl = `${adUrl}?cust_params=${config["cust_params"]}&${urlSearchParams}`;
 
             console.log(`adTagUrl = ${adTagUrl}`)
             adsRequest.adTagUrl = adTagUrl;
@@ -123,8 +106,6 @@
 
             YouTubePlayerBridge.sendYouTubeIFrameAPIReady();
 
-            const playerVars = <<injectedPlayerVars>>
-            const config = <<embedConfig>>
             // const playerVars = JSON.parse(playerVarsString); // replace vars in app
             playerVars["width"] = config["width"]
             playerVars["height"] = config["height"]
@@ -142,30 +123,6 @@
                 youtubeOptions: playerVars,
                 imaOptions: {}
             }, onPlayerReady);
-
-            // player = new YT.Player('youTubePlayerDOM', {
-            //     height: '100%',
-            //     width: '100%',
-            //     events: {
-            //         onReady: function(event) {
-            //             // mute the player as default
-            //             player.mute()
-
-            //             sendVideoData(player)
-            //             YouTubePlayerBridge.sendReady()
-
-            //             startSendMuteState()
-            //         },
-            //         onStateChange: function(event) { sendPlayerStateChange(event.data) },
-            //         onPlaybackQualityChange: function(event) { YouTubePlayerBridge.sendPlaybackQualityChange(event.data) },
-            //         onPlaybackRateChange: function(event) { YouTubePlayerBridge.sendPlaybackRateChange(event.data) },
-            //         onError: function(error) { YouTubePlayerBridge.sendError(error.data) },
-            //         onApiChange: function(event) { YouTubePlayerBridge.sendApiChange() }
-            //     },
-
-            //     playerVars: <<injectedPlayerVars>>,
-            //     embedConfig: <<embedConfig>>
-            // });
         }
 
     	function startSendMuteState() {

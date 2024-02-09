@@ -21,6 +21,8 @@ class EmbedConfig private constructor(private val embedConfig: JSONObject) {
             private const val IU = "iu"
             private const val WIDTH = "width"
             private const val HEIGTH = "height"
+            private const val CUST_PARAMS = "cust_params"
+
         }
 
         private val embedConfig = JSONObject()
@@ -40,6 +42,11 @@ class EmbedConfig private constructor(private val embedConfig: JSONObject) {
         fun iu(values: String): Builder {
 //            adTagParameters.put(IU, values)
             embedConfig.put(IU, values)
+            return this
+        }
+
+        fun custParams(custParams: String): Builder {
+            embedConfig.put(CUST_PARAMS, custParams)
             return this
         }
 
