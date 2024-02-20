@@ -44,6 +44,7 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
     private var currentTime = 0f
     private var playerState = PlayerConstants.PlayerState.UNKNOWN
     private var isMuted = false
+    private var isPlayingAds = false
     internal var isBackgroundPlaybackEnabled = false
 
     private var scrollEnable = true
@@ -86,6 +87,10 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
 
     override fun onUpdateCurrentTime(currentTime: Float) {
         this.currentTime = currentTime
+    }
+
+    override fun isPlayingAds(isPlayingAds: Boolean) {
+        this.isPlayingAds = isPlayingAds
     }
 
     override fun getInstance(): YouTubePlayer = this
@@ -138,6 +143,10 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
 
     override fun exitFullscreen() {
         mainThreadHandler.post { loadUrl("javascript:exitFullscreen()") }
+    }
+
+    override fun isPlayingAds(): Boolean {
+        return isPlayingAds
     }
 
     override fun duration() = duration

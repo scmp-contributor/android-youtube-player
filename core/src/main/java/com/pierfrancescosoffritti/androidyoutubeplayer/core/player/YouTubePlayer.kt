@@ -46,6 +46,8 @@ interface YouTubePlayer {
     fun fullscreen()
     fun exitFullscreen()
 
+    fun isPlayingAds(): Boolean
+
     fun videoID(): String?
     fun author(): String?
     fun title(): String?

@@ -9,13 +9,34 @@
             background-color: #000000;
             overflow: hidden;
             position: fixed;
+
+        }
+
+        #video-wrap {
+            position: relative;
+            max-height: 100%;
+            max-width: 100%;
+            width: 100%;
+            height: 100%;
         }
 
         #youTubePlayerDOM {
-          position: absolute;
-          width: 100%;
-          height: 100%;
+            position: absolute;
+            max-height: 100%;
+            max-width: 100%;
+            width: 100%;
+            height: 100%;
         } 
+
+        .ima-ad-player, .ima-ad-player div {
+            position: absolute;
+            top: 0;
+            left: 0;
+            max-height: 100%;
+            max-width: 100%;
+            width: 100% !important;
+            height: 100% !important;
+        }
     </style>
 
     <head>
@@ -23,7 +44,9 @@
     </head>
 
     <body>
-        <div id="youTubePlayerDOM"></div>
+        <div id="video-wrap">
+            <div id="youTubePlayerDOM"></div>
+        </div>
     </body>
 
     <script src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
@@ -46,6 +69,8 @@
         var timerId;
         var muteTimer;
 
+        var isAdsRequested = false;
+
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api?ima=1";
         var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -64,6 +89,11 @@
         }
 
         function makeAdsRequest(adsRequest, adsRenderingSettings) { // Required
+
+            // avoid makeAdsRequest called more 1 times
+            // if(isAdsRequested) {
+            //     return;
+            // }
 
             console.log(`config iu = ${config["iu"]}`)
             const params = {
@@ -100,6 +130,8 @@
                 window.google.ima.UiElements.AD_ATTRIBUTION,
                 window.google.ima.UiElements.COUNTDOWN];
             // }
+
+            isAdsRequested = true;
         }
 
         function onYouTubeIframeAPIReady() {
@@ -138,7 +170,6 @@
             sendVideoDuration(player);
 
             console.log(`sendPlayerStateChange = ${playerState.toString()}`)
-
             switch (playerState) {
             	case YT.PlayerState.UNSTARTED:
                     sendStateChange(UNSTARTED);
@@ -197,20 +228,34 @@
         	player.seekTo(startSeconds, true);
         }
 
-        function pauseVideo() {
-        	player.pauseVideo();
-        }
-
         function playVideo() {
-        	player.playVideo();
+            console.log(`playVideo`)
+            var adsManager = imaManager.getAdsManager();
+            if(adsManager == null || adsManager.getCurrentAd() == null || adsManager.adTagUrl == null) {
+                player.playVideo();
+            } else {
+                console.log(`playVideo = ${imaManager.getAdsManager().adTagUrl}`)
+                imaManager.getAdsManager().resume()
+            }
+        	
         }
 
         function pauseVideo() {
-        	player.pauseVideo();
+
+            console.log(`pauseVideo = ${imaManager.getAdsManager().adTagUrl}`)
+            if(imaManager.getAdsManager().getCurrentAd() == null) {
+                player.pauseVideo();
+            } else {
+                imaManager.getAdsManager().pause();
+            }
+            
         }
 
         function stopVideo() {
         	player.stopVideo();
+            if(imaManager.getAdsManager().getCurrentAd() != null) {
+                imaManager.getAdsManager().pause();
+            }
         }
 
         function loadVideo(videoId, startSeconds) {
@@ -255,6 +300,11 @@
             } else if(document.webkitFullscreenElement) {
                 document.webkitExitFullscreen()
             }
+        }
+
+        function isPlayingAds() {
+            var currentAd = imaManager.getAdsManager().getCurrentAd()
+            YouTubePlayerBridge.isPlayingAds(currentAd != null);
         }
 
     </script>
