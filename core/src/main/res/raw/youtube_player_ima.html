@@ -28,15 +28,6 @@
             height: 100%;
         } 
 
-        .ima-ad-player, .ima-ad-player div {
-            position: absolute;
-            top: 0;
-            left: 0;
-            max-height: 100%;
-            max-width: 100%;
-            width: 100% !important;
-            height: 100% !important;
-        }
     </style>
 
     <head>
@@ -77,7 +68,6 @@
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
         function onPlayerReady(plyr, ima) {
-            console.log("onPlayerReady")
             player = plyr;
             imaManager = ima;
 
@@ -90,12 +80,6 @@
 
         function makeAdsRequest(adsRequest, adsRenderingSettings) { // Required
 
-            // avoid makeAdsRequest called more 1 times
-            // if(isAdsRequested) {
-            //     return;
-            // }
-
-            console.log(`config iu = ${config["iu"]}`)
             const params = {
                 correlator: "",
                 env: "instream",
@@ -118,7 +102,6 @@
             const adUrl = "https://pubads.g.doubleclick.net/gampad/ads";
             const adTagUrl = `${adUrl}?cust_params=${config["cust_params"]}&${urlSearchParams}`;
 
-            console.log(`adTagUrl = ${adTagUrl}`)
             adsRequest.adTagUrl = adTagUrl;
 
             // Recommended
@@ -129,7 +112,6 @@
             adsRenderingSettings.uiElements = [
                 window.google.ima.UiElements.AD_ATTRIBUTION,
                 window.google.ima.UiElements.COUNTDOWN];
-            // }
 
             isAdsRequested = true;
         }
@@ -138,7 +120,6 @@
 
             YouTubePlayerBridge.sendYouTubeIFrameAPIReady();
 
-            // const playerVars = JSON.parse(playerVarsString); // replace vars in app
             playerVars["width"] = config["width"]
             playerVars["height"] = config["height"]
             playerVars["events"] = {
@@ -149,8 +130,6 @@
                 "onApiChange": function(event) { YouTubePlayerBridge.sendApiChange() }
             }
             
-            console.log(`playerVars = ${JSON.stringify(playerVars)}`)
-
             YT.createPlayerForPublishers('youTubePlayerDOM', makeAdsRequest, {
                 youtubeOptions: playerVars,
                 imaOptions: {}
@@ -169,7 +148,6 @@
             sendVideoData(player);
             sendVideoDuration(player);
 
-            console.log(`sendPlayerStateChange = ${playerState.toString()}`)
             switch (playerState) {
             	case YT.PlayerState.UNSTARTED:
                     sendStateChange(UNSTARTED);
@@ -209,7 +187,6 @@
 
             function startSendCurrentTimeInterval() {
                 timerId = setInterval(function() {
-                    console.log(`Interval = ${player.getCurrentTime()}`)
                     YouTubePlayerBridge.sendVideoCurrentTime( player.getCurrentTime() )
                     YouTubePlayerBridge.sendVideoLoadedFraction( player.getVideoLoadedFraction() )
                 }, 200 );
@@ -229,31 +206,26 @@
         }
 
         function playVideo() {
-            console.log(`playVideo`)
             var adsManager = imaManager.getAdsManager();
-            if(adsManager == null || adsManager.getCurrentAd() == null || adsManager.adTagUrl == null) {
-                player.playVideo();
-            } else {
-                console.log(`playVideo = ${imaManager.getAdsManager().adTagUrl}`)
+            if(adsManager != null && adsManager.getCurrentAd() != null && adsManager.adTagUrl != null) {
                 imaManager.getAdsManager().resume()
+            } else {
+                player.playVideo();
             }
-        	
         }
 
         function pauseVideo() {
-
-            console.log(`pauseVideo = ${imaManager.getAdsManager().adTagUrl}`)
-            if(imaManager.getAdsManager().getCurrentAd() == null) {
-                player.pauseVideo();
-            } else {
+            player.pauseVideo();
+            var adsManager = imaManager.getAdsManager();
+            if(adsManager != null && adsManager.getCurrentAd() != null && adsManager.adTagUrl != null) {
                 imaManager.getAdsManager().pause();
             }
-            
         }
 
         function stopVideo() {
         	player.stopVideo();
-            if(imaManager.getAdsManager().getCurrentAd() != null) {
+            var adsManager = imaManager.getAdsManager();
+            if(adsManager != null && adsManager.getCurrentAd() != null && adsManager.adTagUrl != null) {
                 imaManager.getAdsManager().stop();
             }
         }
@@ -303,8 +275,11 @@
         }
 
         function isPlayingAds() {
-            var currentAd = imaManager.getAdsManager().getCurrentAd()
-            YouTubePlayerBridge.isPlayingAds(currentAd != null);
+            var adsManager = imaManager.getAdsManager();
+            if(adsManager != null && adsManager.getCurrentAd() != null && adsManager.adTagUrl != null) {
+                var currentAd = imaManager.getAdsManager().getCurrentAd()
+                YouTubePlayerBridge.isPlayingAds(currentAd != null);
+            }
         }
 
     </script>
