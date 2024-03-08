@@ -44,6 +44,7 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
     private var currentTime = 0f
     private var playerState = PlayerConstants.PlayerState.UNKNOWN
     private var isMuted = false
+    private var isPlayingAds = false
     internal var isBackgroundPlaybackEnabled = false
 
     private var scrollEnable = true
@@ -86,6 +87,10 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
 
     override fun onUpdateCurrentTime(currentTime: Float) {
         this.currentTime = currentTime
+    }
+
+    override fun isPlayingAds(isPlayingAds: Boolean) {
+        this.isPlayingAds = isPlayingAds
     }
 
     override fun getInstance(): YouTubePlayer = this
@@ -138,6 +143,10 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
 
     override fun exitFullscreen() {
         mainThreadHandler.post { loadUrl("javascript:exitFullscreen()") }
+    }
+
+    override fun isPlayingAds(): Boolean {
+        return isPlayingAds
     }
 
     override fun duration() = duration
@@ -227,7 +236,7 @@ internal class WebViewYouTubePlayer constructor(context: Context, attrs: Attribu
 
     private fun loadHtmlPlayer(playerOptions: IFramePlayerOptions, embedConfig: EmbedConfig, isSmartEmbed: Boolean, channels: Array<String>?) {
 
-        val fileRes = if (!isSmartEmbed) R.raw.ayp_youtube_player else R.raw.ayp_smart_embed_youtube_player
+        val fileRes = if (!isSmartEmbed) R.raw.youtube_player_ima else R.raw.ayp_smart_embed_youtube_player
         var htmlPage = Utils
                 .readHTMLFromUTF8File(resources.openRawResource(fileRes))
                 .replace("<<injectedPlayerVars>>", playerOptions.toString())

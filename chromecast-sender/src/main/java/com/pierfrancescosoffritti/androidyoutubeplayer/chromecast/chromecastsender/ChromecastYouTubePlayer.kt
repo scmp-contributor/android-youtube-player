@@ -50,6 +50,10 @@ class ChromecastYouTubePlayer internal constructor(private val chromecastCommuni
         TODO("Not yet implemented")
     }
 
+    override fun isPlayingAds(isPlayingAds: Boolean) {
+        TODO("Not yet implemented")
+    }
+
     override fun getInstance(): YouTubePlayer {
         return this
     }
@@ -146,6 +150,10 @@ class ChromecastYouTubePlayer internal constructor(private val chromecastCommuni
     }
 
     override fun exitFullscreen() {
+        TODO("Not yet implemented")
+    }
+
+    override fun isPlayingAds(): Boolean {
         TODO("Not yet implemented")
     }
 

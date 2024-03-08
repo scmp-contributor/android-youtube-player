@@ -57,6 +57,7 @@ class YouTubePlayerBridge(private val youTubePlayerOwner: YouTubePlayerBridgeCal
         fun onPlayerStateChanged(playerState: PlayerConstants.PlayerState)
         fun onMutedChange(isMuted: Boolean)
         fun onUpdateCurrentTime(currentTime: Float)
+        fun isPlayingAds(isPlayingAds: Boolean)
     }
 
     @JavascriptInterface
@@ -200,6 +201,11 @@ class YouTubePlayerBridge(private val youTubePlayerOwner: YouTubePlayerBridgeCal
     @JavascriptInterface
     fun sendIsMuted(isMuted: Boolean) {
         mainThreadHandler.post { youTubePlayerOwner.onMutedChange(isMuted) }
+    }
+
+    @JavascriptInterface
+    fun isPlayingAds(isPlayingAds: Boolean) {
+        mainThreadHandler.post { youTubePlayerOwner.isPlayingAds(isPlayingAds) }
     }
 
     private fun parsePlayerState(state: String): PlayerConstants.PlayerState {
