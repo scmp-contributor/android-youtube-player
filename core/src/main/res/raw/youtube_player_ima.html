@@ -80,6 +80,11 @@
 
         function makeAdsRequest(adsRequest, adsRenderingSettings) { // Required
 
+            if(!config["enable_ima"]) {
+                // don't make ads request if ima disabled
+                return
+            }
+
             const params = {
                 correlator: "",
                 env: "instream",
@@ -129,7 +134,7 @@
                 "onError": function(error) { YouTubePlayerBridge.sendError(error.data) },
                 "onApiChange": function(event) { YouTubePlayerBridge.sendApiChange() }
             }
-            
+
             YT.createPlayerForPublishers('youTubePlayerDOM', makeAdsRequest, {
                 youtubeOptions: playerVars,
                 imaOptions: {}

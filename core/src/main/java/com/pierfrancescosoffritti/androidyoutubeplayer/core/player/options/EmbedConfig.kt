@@ -22,6 +22,7 @@ class EmbedConfig private constructor(private val embedConfig: JSONObject) {
             private const val WIDTH = "width"
             private const val HEIGTH = "height"
             private const val CUST_PARAMS = "cust_params"
+            private const val ENABLE_IMA = "enable_ima"
 
         }
 
@@ -47,6 +48,11 @@ class EmbedConfig private constructor(private val embedConfig: JSONObject) {
 
         fun custParams(custParams: String): Builder {
             embedConfig.put(CUST_PARAMS, custParams)
+            return this
+        }
+
+        fun enableIMA(enableIMA: Boolean): Builder {
+            embedConfig.put(ENABLE_IMA, enableIMA)
             return this
         }
 
