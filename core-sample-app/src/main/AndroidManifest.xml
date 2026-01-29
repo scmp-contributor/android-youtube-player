@@ -86,13 +86,11 @@
             android:hardwareAccelerated="true"
             android:label="@string/no_lifecycle_observer_example" />
 
-        <activity android:name="com.psoffritti.librarysampleapptemplate.core.SampleAppTemplateActivity" />
-
         <activity
             android:name="com.pierfrancescosoffritti.androidyoutubeplayer.core.sampleapp.examples.SCMPExampleActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
             android:hardwareAccelerated="true"
-            android:label="@string/scmp_example"></activity>
+            android:label="@string/scmp_example"/>
 
 
         <meta-data

@@ -59,8 +59,6 @@ dependencies {
         exclude group: 'com.google.code.findbugs'
         exclude group: 'com.google.http-client', module: 'google-http-client-jackson2'
     }
-
-    implementation "com.psoffritti.librarysampleapptemplate:core:$versions.sampleAppTemplate"
 }
 
 /*
