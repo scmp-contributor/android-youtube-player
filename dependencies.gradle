@@ -11,7 +11,7 @@ ext.versions = [
         publishVersionCode_chromecast   : 8,
 
         // Plugins
-        gradlePlugin                    : '3.5.1',
+        gradlePlugin                    : '4.0.2',
         bintrayPlugin                   : '0.9.1',
 
         // Kotlin

@@ -5,7 +5,6 @@ apply from: '../dependencies.gradle'
 ext.shard = 'core'
 ext.libVersion = versions.publishVersion_core
 ext.libDescription = 'YouTube Player library for Android, stable and customizable.'
-apply from: '../bintrayconfig.gradle'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -34,7 +33,6 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espressoCore"
     androidTestImplementation "androidx.test:rules:$versions.rules"
     androidTestImplementation "org.mockito:mockito-core:$versions.mockito"
-    androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:$versions.dexmaker"
 
     api "androidx.annotation:annotation:$versions.androidxAnnotations"
     api "androidx.lifecycle:lifecycle-runtime:$versions.androidxLifecycleRuntime"
