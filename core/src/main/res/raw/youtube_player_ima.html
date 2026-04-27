@@ -85,6 +85,13 @@
                 return
             }
 
+            var size = "400x300|480x70|480x360|480x361|640x480";
+            var isVerticalYoutube = new URLSearchParams(decodeURIComponent(config["cust_params"])).get("v_video") == "true"
+
+            if(isVerticalYoutube) {
+                size = size.concat("|360x480|480x640|361x480")
+            }
+
             const params = {
                 correlator: "",
                 env: "instream",
@@ -93,7 +100,7 @@
                 iu: config["iu"],
                 npa: "0",
                 output: "vast",
-                sz: "400x300|480x70|480x360|480x361|640x480",
+                sz: size,
                 tfcd: "0",
                 unviewed_position_start: "1",
                 url: window.location.origin,
